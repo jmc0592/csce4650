@@ -8,6 +8,8 @@ class SymbolTableList {
     public:
         void enter_new_scope();
         void leave_current_scope();
-        void insert(set <SymbolTableList>, string);
+        void insert(string);
         void record(string);
+        bool searchKeyExists(string);
+        set <string> symbolRecord;
 };
