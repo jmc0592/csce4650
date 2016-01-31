@@ -2,12 +2,12 @@
 
 void SymbolTableList::enter_new_scope()
 {
-//logic
+    //push new STL onto Stack when open curly seen
 }
 
 void SymbolTableList::leave_current_scope()
 {
-//logic
+    //pop current STL off the stack
 }
 
 void SymbolTableList::insert(string key)
@@ -18,7 +18,7 @@ void SymbolTableList::insert(string key)
         SymbolTableList::symbolRecord.insert(key);
 }
 
-void SymbolTableList::record(string key)
+void SymbolTableList::recordSearch(string key)
 {
     if(SymbolTableList::searchKeyExists(key) == true) {
         cout << key << " exists." << endl;

@@ -9,7 +9,8 @@ class SymbolTableList {
         void enter_new_scope();
         void leave_current_scope();
         void insert(string);
-        void record(string);
+        void recordSearch(string);
         bool searchKeyExists(string);
         set <string> symbolRecord;
+        SymbolTableList *prev;
 };

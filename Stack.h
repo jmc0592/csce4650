@@ -4,5 +4,6 @@ class Stack {
     public:
         void push(SymbolTableList );
         SymbolTableList pop(SymbolTableList );
-        SymbolTableList *prev;
+        SymbolTableList *top;
+        SymbolTableList *curr;
 }
