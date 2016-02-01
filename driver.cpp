@@ -6,9 +6,9 @@ int main()
     SymbolTableList stl;
     stl.insert("test");
     stl.insert("test2");
-    stl.record("test");
-    stl.record("random");
-    stl.record("test2");
+    stl.recordSearch("test");
+    stl.recordSearch("random");
+    stl.recordSearch("test2");
 
 	return 0;
 }

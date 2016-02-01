@@ -1,6 +1,7 @@
 #include <set>
 #include <string>
 #include <iostream>
+#include "Record.h"
 
 using namespace std;
 
