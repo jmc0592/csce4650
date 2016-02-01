@@ -4,7 +4,7 @@
 #include <set>
 #include <string>
 #include <iostream>
-//#include "Record.h"
+#include "List.h"
 
 using namespace std;
 
@@ -15,6 +15,7 @@ class SymbolTableList {
         void insert(string);
         void recordSearch(string);
         bool searchKeyExists(string);
+        List symbolRecord2;
         set <string> symbolRecord;
         SymbolTableList *prev;
 };
