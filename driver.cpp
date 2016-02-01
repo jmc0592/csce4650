@@ -1,14 +1,14 @@
 #include "SymbolTableList.h"
+#include "Stack.h"
 
 int main()
 {
-	cout<<"Hello World"<<endl;
-    SymbolTableList stl;
-    stl.insert("test");
-    stl.insert("test2");
-    stl.recordSearch("test");
-    stl.recordSearch("random");
-    stl.recordSearch("test2");
+    Stack *stack = new Stack;
+    stack->push();
+    stack->top->insert("test");
+    stack->top->recordSearch("test");//should exist
+    stack->push();
+    stack->top->recordSearch("test");//should not exist
 
 	return 0;
 }

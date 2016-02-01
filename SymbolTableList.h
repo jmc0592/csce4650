@@ -1,7 +1,10 @@
+#ifndef SYMBOLTABLELIST_H
+#define SYMBOLTABLELIST_H
+
 #include <set>
 #include <string>
 #include <iostream>
-#include "Record.h"
+//#include "Record.h"
 
 using namespace std;
 
@@ -15,3 +18,4 @@ class SymbolTableList {
         set <string> symbolRecord;
         SymbolTableList *prev;
 };
+#endif
