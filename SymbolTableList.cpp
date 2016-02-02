@@ -2,12 +2,7 @@
 
 void SymbolTableList::enter_new_scope()
 {
-    Record *temp = symbolRecord2.head;
-    while(temp->after != NULL){
-        cout<<temp->key<<endl;
-        temp = temp->after;
-    }
-    cout<<temp->key<<endl;
+    
 }
 
 void SymbolTableList::leave_current_scope()
@@ -47,11 +42,12 @@ void SymbolTableList::recordSearch(string key)
     }
 }
 
-bool SymbolTableList::searchKeyExists(string key)
+void SymbolTableList::searchKeyExists() //Temporary function, may not be need
 {
-    if(SymbolTableList::symbolRecord.find(key) == SymbolTableList::symbolRecord.end()) {
-        return false;
-    } else {
-        return true;
+    Record *temp = symbolRecord2.head;
+    while(temp->after != NULL){
+        cout<<temp->key<<endl;
+        temp = temp->after;
     }
+    cout<<temp->key<<endl;
 }
