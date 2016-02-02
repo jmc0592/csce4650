@@ -4,7 +4,6 @@
 #include "SymbolTableList.h"
 
 class Stack {
-    //friend class SymbolTableList;
     public:
         void push();
         void pop();

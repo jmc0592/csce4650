@@ -24,7 +24,7 @@ void Stack::pop()
 {
     if(top == NULL) {//empty stack. nothing to pop
         return;
-    } else if(top->prev == NULL) {
+    } else if(top->prev == NULL) {//one item on the stack
         top = NULL;
         curr = NULL;
     } else {

@@ -1,3 +1,6 @@
+/*
+ * SymbolTableList.cpp
+ */
 #include "SymbolTableList.h"
 #include "Stack.h"
 
@@ -41,21 +44,21 @@ void SymbolTableList::recordSearch(string key)
             Record *temp = templist->symbolRecord2.head;
             while(temp->after != NULL){
                 if(temp->key == key){
-                    cout<<"it is found in symbol table stored at "<<templist<<endl;
+                    cout << key << " is found in symbol table stored at " << templist << endl;
                     return;
                 }
                 temp = temp->after;
             }
             if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
-                cout<<"it is found in symbol table stored at "<<templist<<endl;
+                cout << key << " is found in symbol table stored at " << templist << endl;
                 return;
             }
             else{
-                cout<<"this table does not contain "<<key<<endl;
+                cout<<"This table does not contain "<<key<<endl;
             }
         }
         else{
-            cout<<"there are no records in current stack"<<endl;
+            cout<<"There are no records in current stack"<<endl;
         }
         if(templist->prev != NULL){
             templist = templist->prev;
@@ -65,9 +68,6 @@ void SymbolTableList::recordSearch(string key)
         }
     }
    
-
-    
-
     //delete stackCpy; free memory
 }
 
