@@ -8,7 +8,10 @@
 
 using namespace std;
 
+class Stack;
+
 class SymbolTableList {
+    //friend class Stack;
     public:
         void enter_new_scope();
         void leave_current_scope();
@@ -18,5 +21,6 @@ class SymbolTableList {
         List symbolRecord2;
         set <string> symbolRecord;
         SymbolTableList *prev;
+        Stack *addressToStackTop;//used to access the current stack within a STL
 };
 #endif

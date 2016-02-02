@@ -1,8 +1,9 @@
 #include "SymbolTableList.h"
+#include "Stack.h"
 
 void SymbolTableList::enter_new_scope()
 {
-    
+
 }
 
 void SymbolTableList::leave_current_scope()
@@ -25,6 +26,13 @@ void SymbolTableList::insert(string k)
 
 void SymbolTableList::recordSearch(string key)
 {
+    //this code block tests and confirms the access to current and prev STL
+    //JUST FOR TESTING
+    Stack *stackCpy = this->addressToStackTop;
+    cout << this << " this(current STL) address in recordSearch()" << endl;
+    cout << stackCpy << " STL address in recordSearch()" << endl;//same as above address
+    cout << stackCpy->top->prev << " prevSTL address in recordSearch()" << endl;
+
     if(symbolRecord2.head != NULL){
         Record *temp = symbolRecord2.head;
         while(temp->after != NULL){

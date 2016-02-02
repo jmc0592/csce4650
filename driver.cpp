@@ -5,14 +5,17 @@ int main()
 {
 	SymbolTableList stl;
     Stack *stack = new Stack;
+    cout << stack << endl;
     stack->push();
-    //stack->top->insert("test");
-    //stack->top->insert("jacobsayspoop");
+    cout << stack->top->addressToStackTop << endl;//address to stack
+    stack->top->insert("test");
+    stack->top->insert("jacobsayspoop");
     //stack->top->recordSearch("test");//should exist
-    //stack->push();
+    stack->push();
+    cout << stack->top->addressToStackTop << endl;//address to stack. same as earlier one.
     //stack->top->recordSearch("test");//should not exist
     //stack->top->enter_new_scope();
-    //stack->top->insert("thinky");
+    stack->top->insert("thinky");
     //stack->top->insert("lastone");
     stack->top->searchKeyExists();
     stack->top->recordSearch("thinky");
