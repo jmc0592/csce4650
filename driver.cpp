@@ -1,6 +1,6 @@
 #include "SymbolTableList.h"
 #include "Stack.h"
-
+//comment thing
 int main()
 {
 	SymbolTableList stl;

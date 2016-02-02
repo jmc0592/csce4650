@@ -62,7 +62,8 @@ void SymbolTableList::searchKeyExists() //Temporary function, may not be need
     Stack *stackCpy = this->addressToStackTop;
     SymbolTableList *templist = stackCpy->curr;
     
-    while(templist->prev !=NULL){
+    while(templist !=NULL){
+        cout<<"gone into stack"<<endl;
         if(templist->symbolRecord2.head != NULL){
             Record *temp = templist->symbolRecord2.head;
             while(temp->after != NULL){
@@ -74,9 +75,12 @@ void SymbolTableList::searchKeyExists() //Temporary function, may not be need
         else{
             cout<<"there are no records in current stack"<<endl;
         }
-        if(templist->prev->symbolRecord2.head != NULL){
+        if(templist->prev != NULL){
             templist = templist->prev;
         }
+	else{
+		return;
+	}
     }
 
     
