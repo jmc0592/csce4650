@@ -30,7 +30,7 @@ void SymbolTableList::recordSearch(string key)
     //JUST FOR TESTING
     Stack *stackCpy = this->addressToStackTop;
     cout << this << " this(current STL) address in recordSearch()" << endl;
-    cout << stackCpy << " STL address in recordSearch()" << endl;//same as above address
+    cout << stackCpy->top << " STL address in recordSearch()" << endl;//same as above address
     cout << stackCpy->top->prev << " prevSTL address in recordSearch()" << endl;
 
     if(symbolRecord2.head != NULL){
@@ -53,6 +53,8 @@ void SymbolTableList::recordSearch(string key)
     else{
         cout<<"there are no records in current stack"<<endl;
     }
+
+    delete stackCpy;//free memory
 }
 
 void SymbolTableList::searchKeyExists() //Temporary function, may not be need
