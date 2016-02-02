@@ -7,6 +7,5 @@ public:
 	List();
 	Record *head;
 	Record *current;
-	int size;
 };
 #endif

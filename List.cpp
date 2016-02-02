@@ -5,5 +5,5 @@
 List::List(){
 	head = NULL;
 	current = NULL;
-	size = 0;
+
 }
