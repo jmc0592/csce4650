@@ -26,33 +26,41 @@ void SymbolTableList::insert(string k)
 
 void SymbolTableList::recordSearch(string key)
 {
-    //this code block tests and confirms the access to current and prev STL
-    //JUST FOR TESTING
     Stack *stackCpy = this->addressToStackTop;
-    cout << this << " this(current STL) address in recordSearch()" << endl;
-    cout << stackCpy->top << " STL address in recordSearch()" << endl;//same as above address
-    cout << stackCpy->top->prev << " prevSTL address in recordSearch()" << endl;
-
-    if(symbolRecord2.head != NULL){
-        Record *temp = symbolRecord2.head;
-        while(temp->after != NULL){
-            if(temp->key == key){
-                cout<<"it is found"<<endl;
+    SymbolTableList *templist = stackCpy->curr;
+    
+    while(templist !=NULL){
+        //cout<<"gone into stack"<<endl;
+        if(templist->symbolRecord2.head != NULL){
+            Record *temp = templist->symbolRecord2.head;
+            while(temp->after != NULL){
+                if(temp->key == key){
+                    cout<<"it is found in symbol table stored at "<<templist<<endl;
+                    return;
+                }
+                temp = temp->after;
+            }
+            if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
+                cout<<"it is found in symbol table stored at "<<templist<<endl;
                 return;
             }
-            temp = temp->after;
-        }
-        if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
-            cout<<"it is found"<<endl;
-            return;
+            else{
+                cout<<"this table does not contain "<<key<<endl;
+            }
         }
         else{
-            cout<<"it is not found"<<endl;
+            cout<<"there are no records in current stack"<<endl;
+        }
+        if(templist->prev != NULL){
+            templist = templist->prev;
+        }
+        else{
+            return;
         }
     }
-    else{
-        cout<<"there are no records in current stack"<<endl;
-    }
+   
+
+    
 
     //delete stackCpy;//free memory
 }
@@ -63,7 +71,7 @@ void SymbolTableList::searchKeyExists() //Temporary function, may not be need
     SymbolTableList *templist = stackCpy->curr;
     
     while(templist !=NULL){
-        cout<<"gone into stack"<<endl;
+        //cout<<"gone into stack"<<endl;
         if(templist->symbolRecord2.head != NULL){
             Record *temp = templist->symbolRecord2.head;
             while(temp->after != NULL){
@@ -78,9 +86,9 @@ void SymbolTableList::searchKeyExists() //Temporary function, may not be need
         if(templist->prev != NULL){
             templist = templist->prev;
         }
-	else{
-		return;
-	}
+    	else{
+    		return;
+    	}
     }
 
     
