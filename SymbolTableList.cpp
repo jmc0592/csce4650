@@ -25,29 +25,39 @@ void SymbolTableList::insert(string k)
 
 void SymbolTableList::recordSearch(string key)
 {
-    Record *temp = symbolRecord2.head;
-    while(temp->after != NULL){
-        if(temp->key == key){
+    if(symbolRecord2.head != NULL){
+        Record *temp = symbolRecord2.head;
+        while(temp->after != NULL){
+            if(temp->key == key){
+                cout<<"it is found"<<endl;
+                return;
+            }
+            temp = temp->after;
+        }
+        if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
             cout<<"it is found"<<endl;
             return;
         }
-        temp = temp->after;
-    }
-    if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
-        cout<<"it is found"<<endl;
-        return;
+        else{
+            cout<<"it is not found"<<endl;
+        }
     }
     else{
-        cout<<"it is not found"<<endl;
+        cout<<"there are no records in current stack"<<endl;
     }
 }
 
 void SymbolTableList::searchKeyExists() //Temporary function, may not be need
 {
-    Record *temp = symbolRecord2.head;
-    while(temp->after != NULL){
+    if(symbolRecord2.head != NULL){
+        Record *temp = symbolRecord2.head;
+        while(temp->after != NULL){
+            cout<<temp->key<<endl;
+            temp = temp->after;
+        }
         cout<<temp->key<<endl;
-        temp = temp->after;
     }
-    cout<<temp->key<<endl;
+    else{
+        cout<<"there are no records in current stack"<<endl;
+    }
 }
