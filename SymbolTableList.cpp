@@ -9,7 +9,6 @@ void SymbolTableList::enter_new_scope()
 {
     Stack *copy = this->addressToStackTop;
     copy->push();
-    delete copy;
 }
 
 //pop current STL off the stack
@@ -17,7 +16,6 @@ void SymbolTableList::leave_current_scope()
 {
     Stack *copy = this->addressToStackTop;
     copy->pop();
-    delete copy;
 }
 
 void SymbolTableList::insert(string k)
@@ -39,7 +37,6 @@ void SymbolTableList::recordSearch(string key)
     SymbolTableList *templist = stackCpy->curr;
     
     while(templist !=NULL){
-        //cout<<"gone into stack"<<endl;
         if(templist->symbolRecord2.head != NULL){
             Record *temp = templist->symbolRecord2.head;
             while(temp->after != NULL){
@@ -68,7 +65,6 @@ void SymbolTableList::recordSearch(string key)
         }
     }
    
-    //delete stackCpy; free memory
 }
 
 void SymbolTableList::searchKeyExists() //Temporary function, may not be need
@@ -77,7 +73,6 @@ void SymbolTableList::searchKeyExists() //Temporary function, may not be need
     SymbolTableList *templist = stackCpy->curr;
     
     while(templist !=NULL){
-        //cout<<"gone into stack"<<endl;
         if(templist->symbolRecord2.head != NULL){
             Record *temp = templist->symbolRecord2.head;
             while(temp->after != NULL){
