@@ -3,7 +3,6 @@
 //comment thing
 int main()
 {
-	SymbolTableList stl;
     Stack *stack = new Stack;
     cout << stack << endl;
     stack->push();
@@ -21,8 +20,7 @@ int main()
     //stack->top->recordSearch("thinky");
     //stack->top->recordSearch("else");
     //stack->top->recordSearch("test");
-    //stl.enter_new_scope();
-    //stl.insert("thingy");
+
 
 	return 0;
 }
