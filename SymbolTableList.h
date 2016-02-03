@@ -18,8 +18,7 @@ class SymbolTableList {
         void insert(string);
         void recordSearch(string);
         void searchKeyExists();
-        List symbolRecord2;
-        set <string> symbolRecord;
+        List symbolRecord;
         SymbolTableList *prev;
         Stack *addressToStackTop;//used to access the current stack within a STL
 };

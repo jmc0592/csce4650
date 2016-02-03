@@ -8,7 +8,7 @@
 void SymbolTableList::enter_new_scope()
 {
     Stack *copy = this->addressToStackTop;
-    copy->push();
+    copy->push(); 
 }
 
 //pop current STL off the stack
@@ -21,13 +21,13 @@ void SymbolTableList::leave_current_scope()
 void SymbolTableList::insert(string k)
 {
     Record *temp = new Record(k);
-    if(symbolRecord2.head == NULL){
-        symbolRecord2.head = temp;
-        symbolRecord2.current = temp;
+    if(symbolRecord.head == NULL){ //first insert
+        symbolRecord.head = temp; //linking head
+        symbolRecord.current = temp; //continuing current
     }
     else{
-        symbolRecord2.current->after = temp;
-        symbolRecord2.current = symbolRecord2.current->after;
+        symbolRecord.current->after = temp; //single linking
+        symbolRecord.current = symbolRecord.current->after; //moving forward
     }
 }
 
@@ -37,8 +37,8 @@ void SymbolTableList::recordSearch(string key)
     SymbolTableList *templist = stackCpy->curr;
     
     while(templist !=NULL){
-        if(templist->symbolRecord2.head != NULL){
-            Record *temp = templist->symbolRecord2.head;
+        if(templist->symbolRecord.head != NULL){ //looping starting at the head
+            Record *temp = templist->symbolRecord.head;
             while(temp->after != NULL){
                 if(temp->key == key){
                     cout << key << " is found in symbol table stored at " << templist << endl;
@@ -57,7 +57,7 @@ void SymbolTableList::recordSearch(string key)
         else{
             cout<<"There are no records in current stack"<<endl;
         }
-        if(templist->prev != NULL){
+        if(templist->prev != NULL){ //moving to new stack
             templist = templist->prev;
         }
         else{
@@ -67,14 +67,14 @@ void SymbolTableList::recordSearch(string key)
    
 }
 
-void SymbolTableList::searchKeyExists() //Temporary function, may not be need
+void SymbolTableList::searchKeyExists() //Temporary function, used for testing and seeing all entries in all symbol tables
 {
     Stack *stackCpy = this->addressToStackTop;
     SymbolTableList *templist = stackCpy->curr;
     
     while(templist !=NULL){
-        if(templist->symbolRecord2.head != NULL){
-            Record *temp = templist->symbolRecord2.head;
+        if(templist->symbolRecord.head != NULL){
+            Record *temp = templist->symbolRecord.head;
             while(temp->after != NULL){
                 cout<<temp->key<<endl;
                 temp = temp->after;
