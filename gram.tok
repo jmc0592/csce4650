@@ -1,0 +1,16 @@
+%{
+#include "SymbolTableList.h"
+}
+
+%union
+{
+    int intstuff;
+    char *stringstuff;
+    SymbolTableList symbolstuff;
+}
+
+%token <instuff> INTLITERAL
+%token <symbolstuff> ID
+
+%type <stringstuff> expression
+%type <stringstuff> statement /* statement_list */
