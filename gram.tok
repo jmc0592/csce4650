@@ -1,6 +1,9 @@
 %{
 #include "SymbolTableList.h"
-}
+extern "C" int yylex();
+extern "C" int yyparse();
+extern "C" FILE *yyin;
+%}
 
 %union
 {
@@ -9,6 +12,8 @@
     SymbolTableList symbolstuff;
 }
 
+%token BEGIN
+%token END
 %token <instuff> INTLITERAL
 %token <symbolstuff> ID
 
