@@ -1,21 +1,21 @@
 run: compiler
 	./compiler
 
-compiler: main.o gram.o List.o Record.o Stack.o SymbolTableList.o
-		g++ main.o gram.o lex.o List.o Record.o Stack. SymbolTableList.o -o compiler
+compiler: gram.o lex.o List.o Record.o Stack.o SymbolTableList.o main.o
+		g++ gram.o lex.o List.o Record.o Stack.o SymbolTableList.o main.o -o compiler -lfl
 
-gram.o:	gram.c lex.o main.o
-		g++ -c gram.c -lfl
+gram.o:	gram.c lex.o SymbolTableList.o main.o
+		g++ -c gram.c 
 
 gram.c:	gram.y
-		bison -d gram.y
+		bison -d -t gram.y
 		mv gram.tab.c gram.c
 
 gram.y:	gram.tok gram.prod
 		cat gram.tok gram.prod > gram.y
 
 lex.o:	gram.tok lex.c
-		g++ -c lex.c -lfl
+		g++ -c lex.c Stack.h
 
 lex.c:	lex.l
 		flex lex.l

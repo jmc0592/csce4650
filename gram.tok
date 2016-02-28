@@ -1,20 +1,24 @@
 %{
 #include "SymbolTableList.h"
+#include <string>
+using namespace std;
 extern "C" int yylex();
 extern "C" int yyparse();
 extern "C" FILE *yyin;
 %}
 
+
 %union
 {
     int intstuff;
     char *stringstuff;
-    SymbolTableList symbolstuff;
+    SymbolTableList *symbolstuff;
 }
 
-%token BEGIN
+%token BEGIN 
 %token END
-%token <instuff> INTLITERAL
+
+%token <intstuff> INTLITERAL
 %token <symbolstuff> ID
 
 %type <stringstuff> expression

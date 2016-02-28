@@ -16,7 +16,7 @@ class SymbolTableList {
         void enter_new_scope();
         void leave_current_scope();
         void insert(string);
-        void recordSearch(string);
+        int recordSearch(string);
         void searchKeyExists();
         List symbolRecord;
         SymbolTableList *prev;

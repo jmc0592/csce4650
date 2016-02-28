@@ -1,7 +1,3 @@
-/*
- * gram.prod
- * author: Jacob Cole
- */
 %start statement_list
 
 %%
@@ -9,28 +5,38 @@ statement_list  :   statement_list statement
                 |   statement
                 ;
 
-statement   :   ID "=" INTLITERAL ';' //basic var assignment
+statement   :   ID '=' INTLITERAL ';' //basic var assignment
         {
-            $$ = $1->s;//get name of ID
-            generate_copy($1, $3);
+            //$$ = $1->s;//get name of ID
+            //generate_copy($1, $3);
+            printf("generate_copy\n");
         }
         |   ID '=' expression ';'
         {
-            $$ = $1->s;//change to our record
-            generate_exp($1, $3);
+            //$$ = $1->s;//change to our record
+            //generate_exp($1, $3);
+            printf("generate_exp\n");
+        }
+        |   BEGIN
+        {
+            printf("Found 'begin' token\n");
+        }
+        |   END
+        {
+            printf("Found 'end' token'\n");
         }
     ;
 
 expression : expression add_op INTLITERAL 
         {
-            printf("\nWe're adding a constant, %d\n\n",$3); 
-            const_value += $3;
+            //printf("\nWe're adding a constant, %d\n\n",$3); 
+            //const_value += $3;
         }
        | ID
         { 
             printf("We've seen an ID starting an expression\n"); 
-            const_value = 0;
-            $$ = start_expression_string($1);
+            //const_value = 0;
+            //$$ = start_expression_string($1);
         }
    ;
 
@@ -41,6 +47,7 @@ add_op  :   '+'
 mul_op :   '*'
         |   '/'
         ;
+
 
 %%
 
@@ -60,5 +67,7 @@ generate_copy(symbol,value)
     */
 
     //printf("oril %d,r0,r%d\n",value,symbol->offset);
-    printf("%s = %d;\n", symbol->s, value);//what it should look like. sub our vars in.
+    //printf("%s = %d;\n", symbol->s, value);//what it should look like. sub our vars in.
 }
+
+yyerror(s);
