@@ -19,7 +19,7 @@ using namespace std;
 %token <int> INTLITERAL
 %token <string> ID
 %token END
-%token BEGIN 
+%token BEG 
 
 %type <string> expression
 %type <string> statement /* statement_list */
