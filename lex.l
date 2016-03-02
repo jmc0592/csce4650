@@ -10,7 +10,7 @@ IntLit		{Digit}+
 #include "Stack.h"
 void process_id();
 using namespace std;
-//#define YY_DECL extern "C" int yylex();
+extern "C" int yylex();
 %}
 
 %%
@@ -38,12 +38,12 @@ void process_id()
     //todo
 	Stack *symbolTableStack = new Stack;
 
-	stack->push();
+	symbolTableStack->push();
 
 	//no record already there
 	string tempYytext(yytext);
-	if(stack->top->recordSearch(tempYytext) == 0) {
-		stack->top->insert(tempYytext);
+	if(symbolTableStack->top->recordSearch(tempYytext) == 0) {
+		symbolTableStack->top->insert(tempYytext);
 	}
 
 }

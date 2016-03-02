@@ -1,6 +1,3 @@
-run: compiler
-	./compiler
-
 compiler: gram.o lex.o List.o Record.o Stack.o SymbolTableList.o main.o
 		g++ gram.o lex.o List.o Record.o Stack.o SymbolTableList.o main.o -o compiler -lfl
 

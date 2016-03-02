@@ -1,5 +1,7 @@
 /*  global variable(s), used in the compiler  */
 int const_value;
+extern "C" int yyparse();
+
 
 
 int main()

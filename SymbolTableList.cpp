@@ -31,7 +31,7 @@ void SymbolTableList::insert(string k)
     }
 }
 
-void SymbolTableList::recordSearch(string key)
+int SymbolTableList::recordSearch(string key)
 {
     Stack *stackCpy = this->addressToStackTop;
     SymbolTableList *templist = stackCpy->curr;
@@ -42,13 +42,13 @@ void SymbolTableList::recordSearch(string key)
             while(temp->after != NULL){
                 if(temp->key == key){
                     cout << key << " is found in symbol table stored at " << templist << endl;
-                    return;
+                    return 1;
                 }
                 temp = temp->after;
             }
             if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
                 cout << key << " is found in symbol table stored at " << templist << endl;
-                return;
+                return 1;
             }
             else{
                 cout<<"This table does not contain "<<key<<endl;
@@ -56,12 +56,13 @@ void SymbolTableList::recordSearch(string key)
         }
         else{
             cout<<"There are no records in current stack"<<endl;
+            return 0;
         }
         if(templist->prev != NULL){ //moving to new stack
             templist = templist->prev;
         }
         else{
-            return;
+            return 0;
         }
     }
    

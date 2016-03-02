@@ -1,23 +1,24 @@
 %{
+#include <iostream>
+#include <stdio.h>
 #include "SymbolTableList.h"
-#include <string>
+#include "Stack.h"
 using namespace std;
-//extern "C" int yylex();
-//extern "C" int yyparse();
+extern "C" int yylex();
+extern "C" int yyparse();
+void yyerror(const char*);
 //extern "C" FILE *yyin;
 %}
 
-
-/*
 %union
 {
     int intstuff;
     char *stringstuff;
     SymbolTableList *symbolstuff;
-}*/
+}
 
-%token <int> INTLITERAL
-%token <string> ID
+%token <intstuff> INTLITERAL
+%token <stringstuff> ID
 %token END
 %token BEG 
 
