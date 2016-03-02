@@ -8,14 +8,14 @@ gram.o:	gram.c lex.o SymbolTableList.o main.o
 		g++ -c gram.c 
 
 gram.c:	gram.y
-		bison -d -t gram.y
+		bison -d gram.y
 		mv gram.tab.c gram.c
 
 gram.y:	gram.tok gram.prod
 		cat gram.tok gram.prod > gram.y
 
 lex.o:	gram.tok lex.c
-		g++ -c lex.c Stack.h
+		g++ -c lex.c
 
 lex.c:	lex.l
 		flex lex.l

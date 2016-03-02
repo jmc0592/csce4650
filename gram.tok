@@ -2,24 +2,24 @@
 #include "SymbolTableList.h"
 #include <string>
 using namespace std;
-extern "C" int yylex();
-extern "C" int yyparse();
-extern "C" FILE *yyin;
+//extern "C" int yylex();
+//extern "C" int yyparse();
+//extern "C" FILE *yyin;
 %}
 
 
+/*
 %union
 {
     int intstuff;
     char *stringstuff;
     SymbolTableList *symbolstuff;
-}
+}*/
 
-%token BEGIN 
+%token <int> INTLITERAL
+%token <string> ID
 %token END
+%token BEGIN 
 
-%token <intstuff> INTLITERAL
-%token <symbolstuff> ID
-
-%type <stringstuff> expression
-%type <stringstuff> statement /* statement_list */
+%type <string> expression
+%type <string> statement /* statement_list */
