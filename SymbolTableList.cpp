@@ -65,7 +65,7 @@ int SymbolTableList::recordSearch(string key)
             return 0;
         }
     }
-   
+    return 0;
 }
 
 void SymbolTableList::searchKeyExists() //Temporary function, used for testing and seeing all entries in all symbol tables

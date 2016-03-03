@@ -40,6 +40,7 @@ extern "C" int yylex();
 
 void process_id()
 {
+	cout<<"things are happening"<<endl;
     //todo
 	Stack *symbolTableStack = new Stack;
 

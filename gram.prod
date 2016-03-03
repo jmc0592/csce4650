@@ -9,7 +9,7 @@ statement   :   ID '=' INTLITERAL ';' //basic var assignment
         {
             //$$ = $1->s;//get name of ID
             //generate_copy($1, $3);
-            printf("generate_copy\n");
+            printf("[Parser]:generate_copy\n");
         }
         |   ID '=' expression ';'
         {
@@ -19,22 +19,22 @@ statement   :   ID '=' INTLITERAL ';' //basic var assignment
         }
         |   BEG ';'
         {
-            printf("Found 'begin' token\n");
+            printf("[Parser]:Found 'begin' token\n");
         }
         |   END ';'
         {
-            printf("Found 'end' token'\n");
+            printf("[Parser]:Found 'end' token'\n");
         }
     ;
 
 expression : expression add_op INTLITERAL 
         {
-            //printf("\nWe're adding a constant, %d\n\n",$3); 
+            //printf("\n[Parser]:We're adding a constant, %d\n\n",$3); 
             //const_value += $3;
         }
        | ID
         { 
-            printf("We've seen an ID starting an expression\n"); 
+            printf("[Parser]:We've seen an ID starting an expression\n"); 
             //const_value = 0;
             //$$ = start_expression_string($1);
         }
