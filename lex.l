@@ -15,8 +15,13 @@ extern "C" int yylex();
 
 %%
 [ \t\n]+							{ /* delete */		}
-"/begin/"							{	return BEG;	}
-"/end/"								{	return END;	}
+"output"							{	printf("[Lexor]:Found 'ouput()'\n");}
+"begin"								{	printf("[Lexor]:Found 'begin'\n");
+									return BEG;	
+								}
+"end"								{	printf("[Lexor]:Found 'end'\n");
+									return END;	
+								}
 {Letter}({Letter}|{Digit}|_)*		{ 
 										process_id();
 					  					return (ID);		
