@@ -1,11 +1,6 @@
 begin;
-
 x = 3;
 q = 25;
-y = x * (x + 2);
-
-z = y - x;
-
-output(z);
-
+y = 1;
+z = y - x * q;
 end;

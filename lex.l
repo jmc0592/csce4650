@@ -67,16 +67,19 @@ void process_id()
 {
 	List *symbolRecord = new List;
 
-	//cout << "address of stackCopy " << stackCopy << endl;
-	//no record already there
 	string tempYytext(yytext);
 	stackCopy->top->searchKeyExists();//debug
+	
 	cout<<"[Lexor]:";//for recordSearch print statement
+	
+	//no record already there
 	if(stackCopy->top->recordSearch(tempYytext) == 0) {
 		stackCopy->top->insert(tempYytext);
 		Record *temp = new Record(tempYytext);
 		symbolRecord->current = temp;
-		yylval.symbolstuff = symbolRecord;
+	} else {//record in symbol table
+		Record *temp = new Record(tempYytext);
+		symbolRecord->current = temp;
 	}
-
+	yylval.symbolstuff = symbolRecord;
 }
