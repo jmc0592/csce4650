@@ -8,13 +8,7 @@ statement_list  :   statement_list statement
                 |   statement
                 ;
 
-statement   :   ID '=' INTLITERAL ';' //basic var assignment
-        {
-            //$$ = $1->s;//get name of ID
-            printf("[Parser]:Simple assignment - '%s = %d'\n", $1->current->key.c_str(), $3);
-            generate_copy($1->current->key.c_str(), $3);       
-        }
-        |   ID '=' expression ';'
+statement   :   ID '=' expression ';'
         {
             //$$ = $1->s;//change to our record
             //generate_exp($1, $3);

@@ -5,7 +5,7 @@ gram.o:	gram.c lex.o SymbolTableList.o main.o
 		g++ -c gram.c 
 
 gram.c:	gram.y
-		bison -d gram.y
+		bison -d --verbose gram.y
 		mv gram.tab.c gram.c
 
 gram.y:	gram.tok gram.prod
@@ -34,4 +34,4 @@ main.o:	main.cpp
 		g++ -c main.cpp
 		
 clean:	
-		rm *.o compiler gram.y gram.c lex.c gram.tab.h
+		rm *.o compiler gram.y gram.c lex.c gram.tab.h gram.output
