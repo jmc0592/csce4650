@@ -15,13 +15,15 @@ extern "C" int yylex();
 
 %%
 [ \t\n]+							{ /* delete */		}
-"output"							{	printf("[Lexor]:Found 'ouput()'\n");}
+"output"							{	printf("[Lexor]:Found 'output'\n");
+										return(OUTPUT);
+									}
 "begin"								{	printf("[Lexor]:Found 'begin'\n");
-									return BEG;	
-								}
+										return BEG;	
+									}
 "end"								{	printf("[Lexor]:Found 'end'\n");
-									return END;	
-								}
+										return END;	
+									}
 {Letter}({Letter}|{Digit}|_)*		{ 
 										process_id();
 					  					return (ID);		
@@ -30,6 +32,14 @@ extern "C" int yylex();
 										yylval.intstuff = atoi(yytext);
 				          				return (INTLITERAL);
 				          			}
+"("									{
+										printf("[Lexor]:Found '('\n");
+										return('(');
+									}
+")"									{
+										printf("[Lexor]:Found ')'\n");
+										return(')');
+									}
 "="									{ printf("[Lexor]:equal found\n");
 										return ('=');		}
 ";"									{ 	
@@ -50,7 +60,6 @@ extern "C" int yylex();
 
 void process_id()
 {
-	cout<<"[Lexor]:things are happening"<<endl;
     //todo
 	Stack *symbolTableStack = new Stack;
 
@@ -58,6 +67,7 @@ void process_id()
 
 	//no record already there
 	string tempYytext(yytext);
+	cout<<"[Lexor]:";//for recordSearch print statement
 	if(symbolTableStack->top->recordSearch(tempYytext) == 0) {
 		symbolTableStack->top->insert(tempYytext);
 	}
