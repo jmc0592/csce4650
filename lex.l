@@ -30,21 +30,27 @@ extern "C" int yylex();
 										yylval.intstuff = atoi(yytext);
 				          				return (INTLITERAL);
 				          			}
-"="									{ return ('=');		}
+"="									{ printf("[Lexor]:equal found\n");
+										return ('=');		}
 ";"									{ 	
 										printf("[Lexor]:Semicolon, end of statement\n");
 										return (';');		
 									}
-"**"								{ return (EXPONENT);}
-"*"									{ return ('*');		}
-"/"									{ return ('/');		}
-"+"									{ return ('+');		}
-"-"                                 { return ('-');     } 
+"**"								{ printf("[Lexor]:exponent found\n");
+										return (EXPONENT);}
+"*"									{ printf("[Lexor]:multiplication found\n");
+										return ('*');		}
+"/"									{ printf("[Lexor]:division found \n");
+										return ('/');		}
+"+"									{ printf("[Lexor]:addition found \n");
+										return ('+');		}
+"-"                                 { printf("[Lexor]:subtraction found \n");
+										return ('-');     } 
 %%
 
 void process_id()
 {
-	cout<<"things are happening"<<endl;
+	cout<<"[Lexor]:things are happening"<<endl;
     //todo
 	Stack *symbolTableStack = new Stack;
 
