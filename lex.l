@@ -31,7 +31,11 @@ extern "C" int yylex();
 				          				return (INTLITERAL);
 				          			}
 "="									{ return ('=');		}
-";"									{ return (';');		}
+";"									{ 	
+										printf("[Lexor]:Semicolon, end of statement\n");
+										return (';');		
+									}
+"**"								{ return (EXPONENT);}
 "*"									{ return ('*');		}
 "/"									{ return ('/');		}
 "+"									{ return ('+');		}

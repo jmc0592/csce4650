@@ -20,7 +20,10 @@ void yyerror(const char*);
 %token <intstuff> INTLITERAL
 %token <stringstuff> ID
 %token END
-%token BEG 
+%token BEG
+%token EXPONENT
 
 %type <string> expression
+%type <string> term
+%type <string> atom
 %type <string> statement /* statement_list */
