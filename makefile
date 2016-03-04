@@ -1,5 +1,5 @@
 compiler: gram.o lex.o List.o Record.o Stack.o SymbolTableList.o main.o
-		g++ gram.o lex.o List.o Record.o Stack.o SymbolTableList.o main.o -o compiler -lfl
+		g++ -g gram.o lex.o List.o Record.o Stack.o SymbolTableList.o main.o -o compiler -lfl
 
 gram.o:	gram.c lex.o SymbolTableList.o main.o
 		g++ -c gram.c 

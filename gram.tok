@@ -14,11 +14,11 @@ void yyerror(const char*);
 {
     int intstuff;
     char *stringstuff;
-    SymbolTableList *symbolstuff;
+    Stack *symbolstuff;
 }
 
 %token <intstuff> INTLITERAL
-%token <stringstuff> ID
+%token <symbolstuff> ID
 %token END
 %token BEG
 %token EXPONENT
