@@ -27,13 +27,13 @@ statement   :   ID '=' INTLITERAL ';' //basic var assignment
         }
     ;
 
-expression : expression add_op INTLITERAL 
+expression : expression add_op term 
         {
             //printf("\n[Parser]:We're adding a constant, %d\n\n",$3); 
             //const_value += $3;
             printf("[Parser]:Addition/subtraction\n");
         }
-       | ID
+        | term
         { 
             printf("[Parser]:We've seen an ID starting an expression\n"); 
             //const_value = 0;
@@ -54,6 +54,10 @@ term    :   term mul_op factor
 factor  :   factor EXPONENT atom
         {
             printf("[Parser]:Exponentiation\n");
+        }
+        | atom
+        {
+            printf("[Parser]:Atom\n");
         }
     ;
 
