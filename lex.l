@@ -7,6 +7,7 @@ IntLit		{Digit}+
 #include "SymbolTableList.h"
 #include "gram.tab.h"
 #include <string>
+#include <iostream>
 #include "List.h"
 #include "Stack.h"
 #include "Record.h"
@@ -64,16 +65,15 @@ extern "C" int yylex();
 
 void process_id()
 {
-    //todo
-	Stack *symbolTableStack = new Stack;
 	List *symbolRecord = new List;
 
-	symbolTableStack->push();
-
+	//cout << "address of stackCopy " << stackCopy << endl;
 	//no record already there
 	string tempYytext(yytext);
+	stackCopy->top->searchKeyExists();//debug
 	cout<<"[Lexor]:";//for recordSearch print statement
-	if(symbolTableStack->top->recordSearch(tempYytext) == 0) {
+	if(stackCopy->top->recordSearch(tempYytext) == 0) {
+		stackCopy->top->insert(tempYytext);
 		Record *temp = new Record(tempYytext);
 		symbolRecord->current = temp;
 		yylval.symbolstuff = symbolRecord;

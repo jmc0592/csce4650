@@ -3,6 +3,8 @@
 
 #include "SymbolTableList.h"
 
+extern Stack *stackCopy;
+
 class Stack {
     public:
         void push();
