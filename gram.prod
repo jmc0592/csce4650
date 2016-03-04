@@ -11,8 +11,8 @@ statement_list  :   statement_list statement
 statement   :   ID '=' INTLITERAL ';' //basic var assignment
         {
             //$$ = $1->s;//get name of ID
-            //generate_copy($1, $3);
-            printf("[Parser]:Simple assignment - '%s = %d'\n", $1, $3);
+            printf("[Parser]:Simple assignment - '%s = %d'\n", $1->current->key.c_str(), $3);
+            generate_copy($1->current->key.c_str(), $3);       
         }
         |   ID '=' expression ';'
         {
@@ -95,7 +95,7 @@ mul_op :   '*'
  * Should produce something like:
  *      '%s = %d\n'
  */
-void generate_copy(Stack *symbolTableStack, int value)
+void generate_copy(const char *str, int value)
 {
     /*  write a statment of the form 
         
@@ -105,7 +105,7 @@ void generate_copy(Stack *symbolTableStack, int value)
     */
 
     //printf("oril %d,r0,r%d\n",value,symbol->offset);
-    //printf("%s = %d;\n", symbol->s, value);//what it should look like. sub our vars in.
+    printf("%s = %d;\n", str, value);//what it should look like. sub our vars in.
 }
 
 void yyerror(const char *s)

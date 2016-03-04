@@ -7,7 +7,9 @@ IntLit		{Digit}+
 #include "SymbolTableList.h"
 #include "gram.tab.h"
 #include <string>
+#include "List.h"
 #include "Stack.h"
+#include "Record.h"
 void process_id();
 using namespace std;
 extern "C" int yylex();
@@ -58,10 +60,13 @@ extern "C" int yylex();
 										return ('-');     } 
 %%
 
+
+
 void process_id()
 {
     //todo
 	Stack *symbolTableStack = new Stack;
+	List *symbolRecord = new List;
 
 	symbolTableStack->push();
 
@@ -69,7 +74,9 @@ void process_id()
 	string tempYytext(yytext);
 	cout<<"[Lexor]:";//for recordSearch print statement
 	if(symbolTableStack->top->recordSearch(tempYytext) == 0) {
-		symbolTableStack->top->insert(tempYytext);
+		Record *temp = new Record(tempYytext);
+		symbolRecord->current = temp;
+		yylval.symbolstuff = symbolRecord;
 	}
 
 }

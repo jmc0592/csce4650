@@ -3,10 +3,12 @@
 #include <stdio.h>
 #include "SymbolTableList.h"
 #include "Stack.h"
+#include "List.h"
 using namespace std;
 extern "C" int yylex();
 extern "C" int yyparse();
 void yyerror(const char*);
+void generate_copy(const char *, int);
 //extern "C" FILE *yyin;
 %}
 
@@ -14,7 +16,7 @@ void yyerror(const char*);
 {
     int intstuff;
     char *stringstuff;
-    Stack *symbolstuff;
+    List *symbolstuff;
 }
 
 %token <intstuff> INTLITERAL
