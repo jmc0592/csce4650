@@ -30,9 +30,13 @@ int main()
         }
         printf("\n");
 
+        printf("main()\n");
+        printf("{\n");
+
         // Initialize key function 
         int yyparse();
         
         return(yyparse());
 
+        //printf("}\n");
 }

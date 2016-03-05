@@ -16,7 +16,7 @@ statement   :   ID '=' expression ';'
         }
         |   OUTPUT '(' ID ')' ';'
         {
-            printf("[Parser]:output()\n");
+            //printf("[Parser]:output()\n");
             generate_output($3->current->key.c_str());
         }
         |   BEG ';'
@@ -26,6 +26,7 @@ statement   :   ID '=' expression ';'
         |   END ';'
         {
             //printf("[Parser]:Found 'end' token'\n");
+            printf("}\n");
         }
     ;
 
@@ -79,11 +80,11 @@ term    :   term mul_op factor
 
 factor  :   factor EXPONENT atom
         {
-            printf("[Parser]:factor EXPONENT atom\n");
-            printf("[Parser]:%s ** %s;\n", $1,$3);
+            //printf("[Parser]:factor EXPONENT atom\n");
+            //printf("[Parser]:%s ** %s;\n", $1,$3);
             tempS = generate_exponentiation($1, $3);
             //$$ = tempS;
-            printf("Exponent register is %s\n", tempS);
+            //printf("Exponent register is %s\n", tempS);
         }
         | atom
         {
@@ -143,7 +144,7 @@ int generate_temp_expression(char *a, char *b, char *c)
         //printf("its in the second if");
         sprintf(c, "r%d", searchRegisters(c));
     }
-    printf("[FINAL OUTPUT]:r%d = %s %s %s;\n", registerNumber, a, b, c);
+    printf("r%d = %s %s %s;\n", registerNumber, a, b, c);
     registerNumber++;
     //printingThings();
     //searchRegisters(a);
@@ -152,7 +153,7 @@ int generate_temp_expression(char *a, char *b, char *c)
 
 void generate_expression(const char *str, char *rhs)
 {
-    printf("[FINAL OUTPUT]:r%d = %s;\n", registerNumber, rhs);
+    printf("r%d = %s;\n", registerNumber, rhs);
     tempR[registerNumber] = (char)str[0];
     registerNumber++;
     //printingThings();
@@ -170,16 +171,26 @@ char * generate_exponentiation(char *base, char *exponent)
     strcpy(returnReg,"r");
 
     //exponent register
-    //if(checkIfVarIsRegister(exponent) == 0) {
+    if(checkIfVarIsRegister(exponent) == 0) {
         printf("r%d = %s;\n", registerNumber, exponent);
         temp1 = registerNumber;
         registerNumber++;
-    //}
+    } else {
+        printf("r%d = r%d;\n", registerNumber, ++registerNumber);
+        temp1 = registerNumber;
+        registerNumber++;
+    }
 
     //base register
-    printf("r%d = %s;\n", registerNumber, base);
-    temp2 = registerNumber;
-    registerNumber++;
+    if(checkIfVarIsRegister(base) == 0) {
+        printf("r%d = %s;\n", registerNumber, base);
+        temp2 = registerNumber;
+        registerNumber++;
+    } else {
+        printf("r%d = r%d;\n", registerNumber, ++registerNumber);
+        temp2 = registerNumber;
+        registerNumber++;
+    }
 
     //constant multiplier
     printf("r%d = 1;\n", registerNumber);
@@ -208,7 +219,7 @@ void generate_output(const char *var)
     printf("\n");
 }
 
-/*int checkIfVarIsRegister(char *s)
+int checkIfVarIsRegister(char *s)
 {
     regex_t regex;
     int reti;
@@ -220,15 +231,15 @@ void generate_output(const char *var)
     }
     reti = regexec(&regex, s, 0, NULL, 0);
     if(!reti) {
-        printf("[Parser]:var is int\n");
+        //printf("[Parser]:var is int\n");
         return 0;
     } else if(reti == REG_NOMATCH) {
-        printf("[Parser]:var is register\n");
+        //printf("[Parser]:var is register\n");
         return 1;
     }
 
     regfree(&regex);
-}*/
+}
 
 void printingThings(){
     for(int i = 0; i<=registerNumber; i++){
