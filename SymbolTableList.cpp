@@ -41,21 +41,21 @@ int SymbolTableList::recordSearch(string key)
             Record *temp = templist->symbolRecord.head;
             while(temp->after != NULL){
                 if(temp->key == key){
-                    cout << key << " is found in symbol table stored at " << templist << endl;
+                    //cout << key << " is found in symbol table stored at " << templist << endl;
                     return 1;
                 }
                 temp = temp->after;
             }
             if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
-                cout << key << " is found in symbol table stored at " << templist << endl;
+                //cout << key << " is found in symbol table stored at " << templist << endl;
                 return 1;
             }
             else{
-                cout<<"This table does not contain "<<key<<endl;
+                //cout<<"This table does not contain "<<key<<endl;
             }
         }
         else{
-            cout<<"There are no records in current stack"<<endl;
+            //cout<<"There are no records in current stack"<<endl;
             return 0;
         }
         if(templist->prev != NULL){ //moving to new stack
@@ -80,10 +80,10 @@ void SymbolTableList::searchKeyExists() //Temporary function, used for testing a
                 cout<<temp->key<<endl;
                 temp = temp->after;
             }
-            cout<<temp->key<<endl;
+            //cout<<temp->key<<endl;
         }
         else{
-            cout<<"there are no records in current stack"<<endl;
+            //cout<<"there are no records in current stack"<<endl;
         }
 
         if(templist->prev != NULL){

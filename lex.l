@@ -18,13 +18,13 @@ extern "C" int yylex();
 
 %%
 [ \t\n]+							{ /* delete */		}
-"output"							{	printf("[Lexor]:Found 'output'\n");
+"output"							{	//printf("[Lexor]:Found 'output'\n");
 										return(OUTPUT);
 									}
-"begin"								{	printf("[Lexor]:Found 'begin'\n");
+"begin"								{	//printf("[Lexor]:Found 'begin'\n");
 										return BEG;	
 									}
-"end"								{	printf("[Lexor]:Found 'end'\n");
+"end"								{	//printf("[Lexor]:Found 'end'\n");
 										return END;	
 									}
 {Letter}({Letter}|{Digit}|_)*		{ 
@@ -36,28 +36,28 @@ extern "C" int yylex();
 				          				return (INTLITERAL);
 				          			}
 "("									{
-										printf("[Lexor]:Found '('\n");
+										//printf("[Lexor]:Found '('\n");
 										return('(');
 									}
 ")"									{
-										printf("[Lexor]:Found ')'\n");
+										//printf("[Lexor]:Found ')'\n");
 										return(')');
 									}
-"="									{ printf("[Lexor]:equal found\n");
+"="									{ //printf("[Lexor]:equal found\n");
 										return ('=');		}
 ";"									{ 	
-										printf("[Lexor]:Semicolon, end of statement\n");
+										//printf("[Lexor]:Semicolon, end of statement\n");
 										return (';');		
 									}
-"**"								{ printf("[Lexor]:exponent found\n");
+"**"								{ //printf("[Lexor]:exponent found\n");
 										return (EXPONENT);}
-"*"									{ printf("[Lexor]:multiplication found\n");
+"*"									{ //printf("[Lexor]:multiplication found\n");
 										return ('*');		}
-"/"									{ printf("[Lexor]:division found \n");
+"/"									{ //printf("[Lexor]:division found \n");
 										return ('/');		}
-"+"									{ printf("[Lexor]:addition found \n");
+"+"									{ //printf("[Lexor]:addition found \n");
 										return ('+');		}
-"-"                                 { printf("[Lexor]:subtraction found \n");
+"-"                                 { //printf("[Lexor]:subtraction found \n");
 										return ('-');     } 
 %%
 
@@ -70,7 +70,7 @@ void process_id()
 	string tempYytext(yytext);
 	//stackCopy->top->searchKeyExists();//debug
 	
-	cout<<"[Lexor]:";//for recordSearch print statement
+	//cout<<"[Lexor]:";//for recordSearch print statement
 	
 	//no record already there
 	if(stackCopy->top->recordSearch(tempYytext) == 0) {
