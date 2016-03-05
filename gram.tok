@@ -11,10 +11,14 @@ extern "C" int yyparse();
 void yyerror(const char*);
 void generate_copy(const char *, int);
 void generate_expression(const char *, char *);
-void generate_expression(const char *, int);
+int generate_temp_expression(char *a, char *b, char *c);
+void printingThings();
+int searchRegisters(const char *);
 void generate_exponentiation(char *base, char *exponent);
 int exponentiationFlag = 0;
 char tempS[50];
+char tempR[100];
+char* uh;
 int registerNumber = 0;
 //extern "C" FILE *yyin;
 %}

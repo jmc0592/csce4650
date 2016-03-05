@@ -68,7 +68,7 @@ void process_id()
 	List *symbolRecord = new List;
 
 	string tempYytext(yytext);
-	stackCopy->top->searchKeyExists();//debug
+	//stackCopy->top->searchKeyExists();//debug
 	
 	cout<<"[Lexor]:";//for recordSearch print statement
 	
