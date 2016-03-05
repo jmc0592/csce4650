@@ -12,35 +12,35 @@ statement_list  :   statement_list statement
 statement   :   ID '=' expression ';'
         {
             generate_expression($1->current->key.c_str(), $3);
-            printf("[Parser]:ID = expression;\n");
+            //printf("[Parser]:ID = expression;\n");
         }
         |   OUTPUT '(' ID ')' ';'
         {
-            printf("[Parser]:output()\n");
+            //printf("[Parser]:output()\n");
         }
         |   BEG ';'
         {
-            printf("[Parser]:Found 'begin' token\n");
+            //printf("[Parser]:Found 'begin' token\n");
         }
         |   END ';'
         {
-            printf("[Parser]:Found 'end' token'\n");
+            //printf("[Parser]:Found 'end' token'\n");
         }
     ;
 
 expression : expression add_op term 
         {
-            printf("[Parser]:expression add_op term\n");
-            printf("[Parser]:%s %s %s;\n", $1,$2,$3);
+            //printf("[Parser]:expression add_op term\n");
+            //printf("[Parser]:%s %s %s;\n", $1,$2,$3);
             //uh = (char *)malloc(sizeof(char));
             if(uh != "a"){
-                printf("not NULL\n");
+                //printf("not NULL\n");
                 sprintf(uh, "r%d", generate_temp_expression($1, $2, uh));
                 //printf("%s\n", uh);
             }
             else{
                 uh = (char *)malloc(sizeof(char));
-                printf("IS NULL\n");
+                //printf("IS NULL\n");
                 sprintf(uh, "r%d", generate_temp_expression($1, $2, $3));
                 //printf("%s\n", uh);
             }
@@ -48,23 +48,23 @@ expression : expression add_op term
         | term
         {
             //$$ = $1;
-            printf("[Parser]:We've seen an ID starting an expression\n"); 
+            //printf("[Parser]:We've seen an ID starting an expression\n"); 
         }
    ;
 
 term    :   term mul_op factor
         {
-            printf("[Parser]:term mul_op factor\n");
-            printf("[Parser]:%s %s %s;\n", $1,$2,$3);
+            //printf("[Parser]:term mul_op factor\n");
+            //printf("[Parser]:%s %s %s;\n", $1,$2,$3);
             //uh = (char *)malloc(sizeof(char));
             if(uh != NULL){
-                printf("not NULL\n");
+                //printf("not NULL\n");
                 sprintf(uh, "r%d", generate_temp_expression($1, $2, uh));
                 //printf("%s\n", uh);
             }
             else{
                 uh = (char *)malloc(sizeof(char));
-                printf("IS NULL\n");
+                //printf("IS NULL\n");
                 sprintf(uh, "r%d", generate_temp_expression($1, $2, $3));
                 //printf("%s\n", uh);
             }
@@ -72,37 +72,37 @@ term    :   term mul_op factor
         | factor
         {
             //$$ = $1;
-            printf("[Parser]:Single factor\n");
+            //printf("[Parser]:Single factor\n");
         }
     ;
 
 factor  :   factor EXPONENT atom
         {
-            printf("[Parser]:factor EXPONENT atom\n");
-            printf("[Parser]:%s ** %s;\n", $1,$3);
+            //printf("[Parser]:factor EXPONENT atom\n");
+            //printf("[Parser]:%s ** %s;\n", $1,$3);
             generate_exponentiation($1, $3);
         }
         | atom
         {
             //$$ = $1;
-            printf("[Parser]:atom\n");
+           // printf("[Parser]:atom\n");
         }
     ;
 
 atom    :   ID
         {
             $$ = strdup($1->current->key.c_str());
-            printf("[Parser]:ID = %s\n", strdup($1->current->key.c_str()));
+            //printf("[Parser]:ID = %s\n", strdup($1->current->key.c_str()));
         }
         |   INTLITERAL
         {
             sprintf(tempS,"%d",$1);
             $$ = tempS;
-            printf("[Parser]:INTLITERAL is %d\n",$1);
+            //printf("[Parser]:INTLITERAL is %d\n",$1);
         }
         |   '(' expression ')'
         {
-            printf("[Parser]:(expression)\n");
+            //printf("[Parser]:(expression)\n");
         }
     ;
 
@@ -125,6 +125,7 @@ int generate_temp_expression(char *a, char *b, char *c)
         
         x = 17;   
     */
+    //printf("FEEDING IN:::::%s, %s, %s\n", a, b, c);
     if(searchRegisters(a) != -1){
         //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
         sprintf(a, "r%d", searchRegisters(a));
@@ -132,14 +133,15 @@ int generate_temp_expression(char *a, char *b, char *c)
     /*if(searchRegisters(b) != -1){
         //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
         sprintf(b, "r%d", searchRegisters(b));
-    }
+    }*/
+        //printf ("is it getting down here: %d\n",searchRegisters(c));
     if(searchRegisters(c) != -1){
-        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        //printf("its in the second if");
         sprintf(c, "r%d", searchRegisters(c));
-    }*/ 
+    }
     printf("[FINAL OUTPUT]:r%d = %s %s %s;\n", registerNumber, a, b, c);
     registerNumber++;
-    printingThings();
+    //printingThings();
     //searchRegisters(a);
     return (registerNumber-1);
 }
@@ -149,7 +151,7 @@ void generate_expression(const char *str, char *rhs)
     printf("[FINAL OUTPUT]:r%d = %s;\n", registerNumber, rhs);
     tempR[registerNumber] = (char)str[0];
     registerNumber++;
-    printingThings();
+    //printingThings();
     searchRegisters(str);
 }
 
@@ -179,16 +181,18 @@ void printingThings(){
     }
 }
 int searchRegisters(const char *target){
-    for(int i = 0; i<=registerNumber; i++){
-        if(tempR[i] == (char)target[0]){
-            printf("IT IS HERE: %c\n", (char)target[0]);
-            return i;
+    for(int x = 0; x<=registerNumber; x++){
+        char temp = tempR[x];
+        char temp2 = (char)target[0];
+        if(temp == temp2){
+            //printf("IT IS HERE: %c\n", (char)target[0]);
+            return x;
         }
         else{
-            printf("ITS NOT FOUND YO\n");
-            return -1;
+            //printf("ITS NOT FOUND YO\n");
         }
     }
+    return -1;
 }
 void yyerror(const char *s)
 {
