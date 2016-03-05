@@ -5,6 +5,8 @@
 #include "Stack.h"
 #include <string.h>
 #include "List.h"
+#include <stdlib.h>
+#include <regex.h>
 using namespace std;
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -12,11 +14,12 @@ void yyerror(const char*);
 void generate_copy(const char *, int);
 void generate_expression(const char *, char *);
 void generate_expression(const char *, int);
-void generate_exponentiation(char *base, char *exponent);
+char * generate_exponentiation(char *base, char *exponent);
+void generate_output(const char *);
+int checkIfVarIsRegister(char *);
 int exponentiationFlag = 0;
-char tempS[50];
+char *tempS;
 int registerNumber = 0;
-//extern "C" FILE *yyin;
 %}
 
 %union
