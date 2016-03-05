@@ -16,7 +16,12 @@ statement   :   ID '=' expression ';'
         }
         |   OUTPUT '(' ID ')' ';'
         {
+<<<<<<< HEAD
             //printf("[Parser]:output()\n");
+=======
+            printf("[Parser]:output()\n");
+            generate_output($3->current->key.c_str());
+>>>>>>> origin/master
         }
         |   BEG ';'
         {
@@ -78,9 +83,17 @@ term    :   term mul_op factor
 
 factor  :   factor EXPONENT atom
         {
+<<<<<<< HEAD
             //printf("[Parser]:factor EXPONENT atom\n");
             //printf("[Parser]:%s ** %s;\n", $1,$3);
             generate_exponentiation($1, $3);
+=======
+            printf("[Parser]:factor EXPONENT atom\n");
+            printf("[Parser]:%s ** %s;\n", $1,$3);
+            tempS = generate_exponentiation($1, $3);
+            //$$ = tempS;
+            printf("Exponent register is %s\n", tempS);
+>>>>>>> origin/master
         }
         | atom
         {
@@ -96,6 +109,7 @@ atom    :   ID
         }
         |   INTLITERAL
         {
+            tempS = (char*)malloc(sizeof(char)*50);
             sprintf(tempS,"%d",$1);
             $$ = tempS;
             //printf("[Parser]:INTLITERAL is %d\n",$1);
@@ -125,7 +139,11 @@ int generate_temp_expression(char *a, char *b, char *c)
         
         x = 17;   
     */
+<<<<<<< HEAD
     //printf("FEEDING IN:::::%s, %s, %s\n", a, b, c);
+=======
+
+>>>>>>> origin/master
     if(searchRegisters(a) != -1){
         //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
         sprintf(a, "r%d", searchRegisters(a));
@@ -155,25 +173,76 @@ void generate_expression(const char *str, char *rhs)
     searchRegisters(str);
 }
 
-void generate_exponentiation(char *base, char *exponent)
+/*
+ * handles register assignment and logic for exponentiation
+ */
+char * generate_exponentiation(char *base, char *exponent)
 {
-    int temp1,temp2,temp3;
-    printf("--doing exponent generation--\n");
-    printf("r%d = %s;\n", registerNumber, exponent);
-    temp1 = registerNumber;
-    registerNumber++;
+    int temp1,temp2,temp3;//for remembering registers
+    char tempStr[50];
+    char returnReg[50];
+    strcpy(returnReg,"r");
+
+    //exponent register
+    //if(checkIfVarIsRegister(exponent) == 0) {
+        printf("r%d = %s;\n", registerNumber, exponent);
+        temp1 = registerNumber;
+        registerNumber++;
+    //}
+
+    //base register
     printf("r%d = %s;\n", registerNumber, base);
     temp2 = registerNumber;
     registerNumber++;
-    printf("r%d = 1;\n", registerNumber);//constant multiplier
+
+    //constant multiplier
+    printf("r%d = 1;\n", registerNumber);
     temp3 = registerNumber;
     registerNumber++;
-    printf("L1:\n");
+
+    printf("\nExpo:\n");
     printf("\tr%d = r%d * r%d;\n", temp3, temp2, temp3);
     printf("\tr%d = r%d - 1;\n", temp1, temp1);
-    printf("\tbgt L1;\n");
+    printf("\tif(r%d>0) goto Expo;\n", temp1);
+
+    sprintf(tempStr,"%d",temp3);//convert from int to string
+
+    strncat(returnReg,tempStr,strlen(tempStr));
+
+    return returnReg;
 
 }
+
+void generate_output(const char *var)
+{
+    char temp[50] = "printf(\"%%s\",";
+    strcat(temp,var);
+    strcat(temp,");");
+    printf(temp);
+    printf("\n");
+}
+
+/*int checkIfVarIsRegister(char *s)
+{
+    regex_t regex;
+    int reti;
+
+    reti = regcomp(&regex, "^[0-9]+",REG_EXTENDED);
+    if (reti) {
+        fprintf(stderr, "Could not compile regex\n");
+        exit(1);
+    }
+    reti = regexec(&regex, s, 0, NULL, 0);
+    if(!reti) {
+        printf("[Parser]:var is int\n");
+        return 0;
+    } else if(reti == REG_NOMATCH) {
+        printf("[Parser]:var is register\n");
+        return 1;
+    }
+
+    regfree(&regex);
+}*/
 
 void printingThings(){
     for(int i = 0; i<=registerNumber; i++){
