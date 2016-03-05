@@ -1,6 +1,7 @@
 /*
  * productions
  */
+
 %start statement_list
 
 %%
@@ -32,6 +33,18 @@ expression : expression add_op term
         {
             printf("[Parser]:expression add_op term\n");
             printf("[Parser]:%s %s %s;\n", $1,$2,$3);
+            //uh = (char *)malloc(sizeof(char));
+            if(uh != "a"){
+                printf("not NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, uh));
+                //printf("%s\n", uh);
+            }
+            else{
+                uh = (char *)malloc(sizeof(char));
+                printf("IS NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, $3));
+                //printf("%s\n", uh);
+            }
         }
         | term
         {
@@ -44,6 +57,18 @@ term    :   term mul_op factor
         {
             printf("[Parser]:term mul_op factor\n");
             printf("[Parser]:%s %s %s;\n", $1,$2,$3);
+            //uh = (char *)malloc(sizeof(char));
+            if(uh != NULL){
+                printf("not NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, uh));
+                //printf("%s\n", uh);
+            }
+            else{
+                uh = (char *)malloc(sizeof(char));
+                printf("IS NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, $3));
+                //printf("%s\n", uh);
+            }
         }
         | factor
         {
@@ -98,20 +123,39 @@ mul_op :   '*' {$$ = "*";}
  * Should produce something like:
  *      '%s = %d\n'
  */
-void generate_expression(const char *str, int value)
+int generate_temp_expression(char *a, char *b, char *c)
 {
     /*  write a statment of the form 
         
         x = 17;   
     */
-    printf("r%d = %d----------;\n", registerNumber, value);
+
+    if(searchRegisters(a) != -1){
+        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        sprintf(a, "r%d", searchRegisters(a));
+    }
+    /*if(searchRegisters(b) != -1){
+        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        sprintf(b, "r%d", searchRegisters(b));
+    }
+    if(searchRegisters(c) != -1){
+        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        sprintf(c, "r%d", searchRegisters(c));
+    }*/ 
+    printf("[FINAL OUTPUT]:r%d = %s %s %s;\n", registerNumber, a, b, c);
     registerNumber++;
+    printingThings();
+    //searchRegisters(a);
+    return (registerNumber-1);
 }
 
 void generate_expression(const char *str, char *rhs)
 {
-    printf("r%d = %s;\n", registerNumber, rhs);
+    printf("[FINAL OUTPUT]:r%d = %s;\n", registerNumber, rhs);
+    tempR[registerNumber] = (char)str[0];
     registerNumber++;
+    printingThings();
+    searchRegisters(str);
 }
 
 /*
@@ -185,6 +229,23 @@ void generate_output(const char *var)
     regfree(&regex);
 }*/
 
+void printingThings(){
+    for(int i = 0; i<=registerNumber; i++){
+        printf("%c ", tempR[i]);
+    }
+}
+int searchRegisters(const char *target){
+    for(int i = 0; i<=registerNumber; i++){
+        if(tempR[i] == (char)target[0]){
+            printf("IT IS HERE: %c\n", (char)target[0]);
+            return i;
+        }
+        else{
+            printf("ITS NOT FOUND YO\n");
+            return -1;
+        }
+    }
+}
 void yyerror(const char *s)
 {
         fflush(stdout);
