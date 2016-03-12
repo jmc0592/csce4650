@@ -30,8 +30,12 @@ int main()
         }
         printf("\n");
 
-        printf("main()\n");
+	//pointer declarations
+	printf("int *iptr1;\nchar *cptr1;\nchar *fp, *sp;\n");
+        
+	printf("main()\n");
         printf("{\n");
+	printf("r500 = 0;\n");//reserve r500 for 0
 
         // Initialize key function 
         int yyparse();

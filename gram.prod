@@ -17,7 +17,7 @@ statement   :   ID '=' expression ';'
         |   OUTPUT '(' ID ')' ';'
         {
             //printf("[Parser]:output()\n");
-            generate_output($3->current->key.c_str());
+           // generate_output($3->current->key.c_str());
         }
         |   BEG ';'
         {
@@ -216,7 +216,7 @@ char * generate_exponentiation(char *base, char *exponent)
     printf("\nL1:\n");
     printf("\tr%d = r%d * r%d;\n", temp3, temp2, temp3);
     printf("\tr%d = r%d - 1;\n", temp1, temp1);
-    printf("\tif(r%d>0) goto L1;\n", temp1);
+    printf("\tif(r%d>r500) goto L1;\n", temp1);//r500 is reserved as 0
 
     sprintf(tempStr,"%d",temp3);//convert from int to string
 
