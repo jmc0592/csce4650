@@ -9,17 +9,17 @@ func_list:   func
             |   func func_list
     ;
 
-func:   NAME '(' parm_list ')' ':' type {printf("New scope\n");} dec_list s_block
+func:   NAME '(' parm_list ')' ':' type dec_list s_block
     ;
 
 parm_list:   NAME
             |   NAME ',' parm_list
-            | ' '
+            |
     ;               /* goes to "nothing", i.expression. empty string */ 
 
 dec_list:   decl
             | decl ';' dec_list
-            | ' '   /* goes to "nothing", i.expression. empty
+            |  /* goes to "nothing", i.expression. empty
 				   string */ 
 decl:   type NAME
         |   type NAME '['size_list']'
@@ -29,10 +29,10 @@ size_list:   INTLITERAL
             |   INTLITERAL ',' size_list
     ;
 
-type:   "int"
-        |   "char"
-        |   "bool"
-        |   "void"
+type:   INT
+        |   CHAR
+        |   BOOL
+        |   VOID
     ;
 
 s_block: BEG dec_list stmts END
@@ -44,15 +44,15 @@ stmts:  statement
 statement:  id '=' expression
     |   NAME '(' expr_list ')'
     |   id '=' conditional_expr
-    |   "if" '(' conditional_expr ')' s_block
-    |   "if" '(' conditional_expr ')' s_block "else" s_block
-    |   "do" INTLITERAL NAME '=' do_list stmts end_do
+    |   IF '(' conditional_expr ')' s_block
+    |   IF '(' conditional_expr ')' s_block ELSE s_block
+    |   DO INTLITERAL NAME '=' do_list stmts end_do
     ;
 
 end_do:  INTLITERAL CONTINUE
 
 conditional_expr:    expression rel_op expression
-                    |   "not" '(' conditional_expr ')'
+                    |   NOT '(' conditional_expr ')'
                     |   conditional_expr AND '(' conditional_expr ')'
                     |   conditional_expr AND expression rel_op expression
                     |   conditional_expr OR '(' conditional_expr ')'
@@ -65,7 +65,7 @@ do_list: expression ',' expression
 
 expr_list:   expression
             |   expression ',' expr_list
-            |   ' '/* goes to "nothing", i.expression. empty string */ 
+            |   /* goes to "nothing", i.expression. empty string */ 
     ;
 
 expression:  expression bop bit_term

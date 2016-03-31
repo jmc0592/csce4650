@@ -19,47 +19,131 @@ extern "C" int yylex();
 
 %%
 [ \t\n]+							{ /* delete */		}
-"output"							{	//printf("[Lexor]:Found 'output'\n");
+"output"							{	printf("[Lexor]:Found 'output'\n");
 										return(OUTPUT);
 									}
-"begin"								{	//printf("[Lexor]:Found 'begin'\n");
+"begin"								{	printf("[Lexor]:Found 'begin'\n");
 										return BEG;	
 									}
-"end"								{	//printf("[Lexor]:Found 'end'\n");
+"end"								{	printf("[Lexor]:Found 'end'\n");
 										return END;	
 									}
+"continue"							{	printf("[Lexor]:Found 'continue'\n");
+										return CONTINUE;	
+									}
+"else"								{	printf("[Lexor]:Found 'else'\n");
+										return ELSE;	
+									}
+"do"								{	printf("[Lexor]:Found 'do'\n");
+										return DO;	
+									}
+"not"								{	printf("[Lexor]:Found 'not'\n");
+										return NOT;	
+									}																																				
+".lt."								{	printf("[Lexor]:Found '.lt.'\n");
+										return LT;
+									}
+".le."								{	printf("[Lexor]:Found '.le.'\n");
+										return LE;
+									}									
+".gt."								{	printf("[Lexor]:Found '.gt.'\n");
+										return GT;
+									}
+".ge."								{	printf("[Lexor]:Found '.ge.'\n");
+										return GE;
+									}
+".eq."								{	printf("[Lexor]:Found '.eq.'\n");
+										return EQ;
+									}
+".neq."								{	printf("[Lexor]:Found '.neq.'\n");
+										return NEQ;
+									}
+"int"								{	printf("[Lexor]:Found 'int'\n");
+										return (INT);
+									}
+"char"								{	printf("[Lexor]:Found 'char'\n");
+										return (CHAR);
+									}
+"bool"								{	printf("[Lexor]:Found 'bool'\n");
+										return (BOOL);
+									}
+"void"								{	printf("[Lexor]:Found 'void'\n");
+										return (VOID);
+									}																																																															
+
 {Letter}({Letter}|{Digit}|_)*		{ 
+										printf("[Lexor]: found 'NAME'\n");
 										process_id();
 					  					return (NAME);		
 					  				}
-{IntLit}							{ 
+{IntLit}							{
+										printf("[Lexor]: found 'INTLITERAL'\n");
 										yylval.intstuff = atoi(yytext);
 				          				return (INTLITERAL);
 				          			}
+","									{	printf("[Lexor]: found ','\n");
+										return (',');
+									}				          			
 "("									{
-										//printf("[Lexor]:Found '('\n");
+										printf("[Lexor]:Found '('\n");
 										return('(');
 									}
 ")"									{
-										//printf("[Lexor]:Found ')'\n");
+										printf("[Lexor]:Found ')'\n");
 										return(')');
 									}
-"="									{ //printf("[Lexor]:equal found\n");
+"["									{	printf("[Lexor]: '[' found\n");
+										return ('[');
+									}
+"]"									{	printf("[Lexor]: ']' found\n");
+										return (']');
+									}										
+"="									{ printf("[Lexor]:equal found\n");
 										return ('=');		}
 ";"									{ 	
-										//printf("[Lexor]:Semicolon, end of statement\n");
+										printf("[Lexor]:found ';'\n");
 										return (';');		
 									}
-"**"								{ //printf("[Lexor]:exponent found\n");
+":"									{	printf("[Lexor]: found ':'\n");
+										return (':');
+									}									
+"**"								{ printf("[Lexor]:exponent found\n");
 										return (EXPONENT);}
-"*"									{ //printf("[Lexor]:multiplication found\n");
+"*"									{ printf("[Lexor]:multiplication found\n");
 										return ('*');		}
-"/"									{ //printf("[Lexor]:division found \n");
+"/"									{ printf("[Lexor]:division found \n");
 										return ('/');		}
-"+"									{ //printf("[Lexor]:addition found \n");
+"%"									{ printf("[Lexor]:modulo found\n");
+										return ('%');		}										
+"++"								{	printf("[Lexor]: '++' found\n");
+										return ('++');
+									}								
+"+"									{ printf("[Lexor]:addition found \n");
 										return ('+');		}
-"-"                                 { //printf("[Lexor]:subtraction found \n");
-										return ('-');     } 
+"--"								{	printf("[Lexor]: '--' found\n");
+										return ('--');
+									}										
+"-"                                 { printf("[Lexor]:subtraction found \n");
+										return ('-');     
+									}
+"&"									{	printf("[Lexor]: '&' found\n");
+										return ('&');
+									}
+"|"									{	printf("[Lexor]: '|' found\n");
+										return ('|');
+									}																	
+"^"									{	printf("[Lexor]: '^' found\n");
+										return ('^');
+									}									
+"~"									{	printf("[Lexor]: '~' found\n");
+										return ('~');
+									}	
+">>"								{	printf("[Lexor]: '>>' found\n");
+										return ('>>');
+									}
+"<<"								{	printf("[Lexor]: '<<' found\n");
+										return ('<<');
+									}																																		 
 %%
 
 
@@ -71,7 +155,7 @@ void process_id()
 	string tempYytext(yytext);
 	//stackCopy->top->searchKeyExists();//debug
 	
-	//cout<<"[Lexor]:";//for recordSearch print statement
+	//cout<<"[Lexor][process_id()]:";//for recordSearch print statement
 	
 	//no record already there
 	if(stackCopy->top->recordSearch(tempYytext) == 0) {

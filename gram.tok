@@ -39,6 +39,10 @@ int registerNumber = 0;
 //%token <symbolstuff> ID
 %token <stringstuff> NAME
 %token CONTINUE
+%token ELSE
+%token IF
+%token DO
+%token NOT
 %token AND
 %token OR
 %token GT
@@ -51,6 +55,10 @@ int registerNumber = 0;
 %token BEG
 %token EXPONENT
 %token OUTPUT
+%token INT
+%token BOOL
+%token CHAR
+%token VOID
 
 %type <stringstuff> id
 %type <stringstuff> program
