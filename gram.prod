@@ -1,142 +1,144 @@
-//TODO: Change case to yacc standard
-//TODO: Create tokens for any productions that go to more than 1 character
-%start Program
+%start program
 
 
 %%
-Program:    DeclList FuncList
+program:    dec_list func_list
     ;
 
-FuncList:   Func
-            |   Func FuncList
+func_list:   func
+            |   func func_list
     ;
 
-Func:   name '(' ParmList ') ':' Type DeclList SBlock
+func:   NAME '(' parm_list ')' ':' type {printf("New scope\n");} dec_list s_block
     ;
 
-ParmList:   name
-            |   name, ParmList
-            |
-    ;               /* goes to "nothing", i.e. empty string */ 
+parm_list:   NAME
+            |   NAME ',' parm_list
+            | ' '
+    ;               /* goes to "nothing", i.expression. empty string */ 
 
-DeclList:   Decl
-            | Decl ';' DeclList
-            |   /* goes to "nothing", i.e. empty
+dec_list:   decl
+            | decl ';' dec_list
+            | ' '   /* goes to "nothing", i.expression. empty
 				   string */ 
-Decl:   Type name
-        |   Type name '['SizeList']'
+decl:   type NAME
+        |   type NAME '['size_list']'
     ;
 
-SizeList:   intLiteral
-            |   intLiteral , SizeList
+size_list:   INTLITERAL
+            |   INTLITERAL ',' size_list
     ;
 
-Type:   int
-        |   char
-        |   boolean
-        |   void
-        |   double
+type:   "int"
+        |   "char"
+        |   "bool"
+        |   "void"
     ;
 
-SBlock: begin DeclList Stmts end
+s_block: BEG dec_list stmts END
 
-Stmts:  S
-        |   S Stmts
+stmts:  statement
+        |   statement stmts
     ;
 
-S:  ID '=' E
-    |   name '(' ExprList ')'
-    |   ID '=' ConditionalExpr
-    |   if '(' ConditionalExpr ')' SBlock
-    |   if '(' ConditionalExpr ')' SBlock else SBlock
-    |   do intLiteral name '=' DoList Stmts Enddo
+statement:  id '=' expression
+    |   NAME '(' expr_list ')'
+    |   id '=' conditional_expr
+    |   "if" '(' conditional_expr ')' s_block
+    |   "if" '(' conditional_expr ')' s_block "else" s_block
+    |   "do" INTLITERAL NAME '=' do_list stmts end_do
     ;
 
-Enddo:  intLiteral continue
+end_do:  INTLITERAL CONTINUE
 
-ConditionalExpr:    E RelOp E
-                    |   not '(' ConditionalExpr ')'
-                    |   ConditionalExpr and '(' ConditionalExpr ')'
-                    |   ConditionalExpr and E RelOp E
-                    |   ConditionalExpr or '(' ConditionalExpr ')'
-                    |   ConditionalExpr or E RelOp E
+conditional_expr:    expression rel_op expression
+                    |   "not" '(' conditional_expr ')'
+                    |   conditional_expr AND '(' conditional_expr ')'
+                    |   conditional_expr AND expression rel_op expression
+                    |   conditional_expr OR '(' conditional_expr ')'
+                    |   conditional_expr OR expression rel_op expression
     ;
 
-DoList: E ',' E
-        |   E ',' E ',' E
+do_list: expression ',' expression
+        |   expression ',' expression ',' expression
     ;
 
-ExprList:   E
-            |   E ',' ExprList
-            |   /* goes to "nothing", i.e. empty string */ 
+expr_list:   expression
+            |   expression ',' expr_list
+            |   ' '/* goes to "nothing", i.expression. empty string */ 
     ;
 
-E:  E BOP BitTerm
-    |   BitTerm
+expression:  expression bop bit_term
+    |   bit_term
     ;
 
-BitTerm:    BitTerm ShiftOp ShiftTerm
-            |   ShiftTerm
+bit_term:    bit_term shift_op shift_term
+            |   shift_term
     ;
 
-ShiftTerm:  ShiftTerm AddOp Term
-            |   Term
+shift_term:  shift_term add_op term
+            |   term
     ;
 
-Term:   Term MulOp Factor
-        |   Factor
+term:   term mul_op factor
+        |   factor
     ;
 
-Factor: Factor EXP UOperand
-        |   UOperand
+factor: factor EXPONENT u_operand
+        |   u_operand
     ;
 
-UOperand:   UOp Primary
-            |   Primary
+u_operand:   uop primary
+            |   primary
     ;
 
-Primary:    ID
-            |   name '(' ExprList ')'   
-            |   '(' E ')'
-            |   floatLiteral		/* any floating point number, d.ff* */
-            |   intLiteral		/* could be any integer number */
-            |   stringLiteral	/* any quoted string, like "ET phone home" */
+primary:    id
+            |   NAME '(' expr_list ')'   
+            |   '(' expression ')'
+            |   INTLITERAL		/* could be any integer number */
+            |   STRINGLITERAL	/* any quoted string, like "ET phone home" */
     ;
 
-ID: name
-    |   name '[' ExprList ']' 
+id: NAME
+    |   NAME '[' expr_list ']' 
     ;
 
-RelOp:  gt
-        |   ge
-        |   le
-        |   lt
-        |   eq
-        |   neq
+rel_op:  GT
+        |   GE
+        |   LE
+        |   LT
+        |   EQ
+        |   NEQ
     ;
 
-BOP:    &
+bop:    '&'
         |   '|'
         |   '^'
     ;
 
-ShiftOp:    "<<"
+shift_op:    "<<"
             |   ">>"
     ;
 
-MulOp:  '*'
+mul_op:  '*'
         |   '/'
         |   '%'
     ;
 
-AddOp:  '+'
+add_op:  '+'
         |   '-'
     ;
 
-UOP:    '-'
+uop:    '-'
         |   "++"
         |   "--"
         |   '&'
         |   '~'
     ;
 %%
+
+void yyerror(const char *s)
+{
+        fflush(stdout);
+        printf("Syntax Error: %s\n",s);
+}

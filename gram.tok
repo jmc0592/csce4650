@@ -34,16 +34,50 @@ int registerNumber = 0;
     List *symbolstuff;
 }
 
-%token <intstuff> INTLITERAL
-%token <symbolstuff> ID
+%token <intstuff> INTLITERAL 
+%token <stringstuff> STRINGLITERAL
+//%token <symbolstuff> ID
+%token <stringstuff> NAME
+%token CONTINUE
+%token AND
+%token OR
+%token GT
+%token GE
+%token LE
+%token LT
+%token EQ
+%token NEQ
 %token END
 %token BEG
 %token EXPONENT
 %token OUTPUT
 
+%type <stringstuff> id
+%type <stringstuff> program
+%type <stringstuff> dec_list
+%type <stringstuff> func_list
+%type <stringstuff> func
+%type <stringstuff> parm_list
+%type <stringstuff> s_block
+%type <stringstuff> decl
+%type <stringstuff> type
+%type <stringstuff> size_list
+%type <stringstuff> stmts
+%type <stringstuff> end_do
+%type <stringstuff> conditional_expr
+%type <stringstuff> do_list
+%type <stringstuff> expr_list
+%type <stringstuff> shift_term
+%type <stringstuff> bit_term
+%type <stringstuff> u_operand
+%type <stringstuff> primary
+%type <stringstuff> rel_op
+%type <stringstuff> bop
+%type <stringstuff> uop
+%type <stringstuff> shift_op
 %type <stringstuff> expression
 %type <stringstuff> term
-%type <stringstuff> atom
+//%type <stringstuff> atom
 %type <stringstuff> factor
 %type <stringstuff> mul_op
 %type <stringstuff> add_op

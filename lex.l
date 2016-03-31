@@ -1,6 +1,7 @@
 Digit		[0-9]
 Letter		[a-zA-Z]
 IntLit		{Digit}+
+StrLit		{Letter}*
 
 
 %{
@@ -29,7 +30,7 @@ extern "C" int yylex();
 									}
 {Letter}({Letter}|{Digit}|_)*		{ 
 										process_id();
-					  					return (ID);		
+					  					return (NAME);		
 					  				}
 {IntLit}							{ 
 										yylval.intstuff = atoi(yytext);

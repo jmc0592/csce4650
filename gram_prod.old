@@ -1,0 +1,295 @@
+/*
+ * productions
+ */
+
+%start statement_list
+
+%%
+statement_list  :   statement_list statement
+                |   statement
+                ;
+
+statement   :   ID '=' expression ';'
+        {
+            generate_expression($1->current->key.c_str(), $3);
+            //printf("[Parser]:ID = expression;\n");
+        }
+        |   OUTPUT '(' ID ')' ';'
+        {
+            //printf("[Parser]:output()\n");
+           // generate_output($3->current->key.c_str());
+        }
+        |   BEG ';'
+        {
+            //printf("[Parser]:Found 'begin' token\n");
+        }
+        |   END ';'
+        {
+            //printf("[Parser]:Found 'end' token'\n");
+            printf("}\n");
+        }
+    ;
+
+expression : expression add_op term 
+        {
+            //printf("[Parser]:expression add_op term\n");
+            //printf("[Parser]:%s %s %s;\n", $1,$2,$3);
+            //uh = (char *)malloc(sizeof(char));
+            if(uh != "a"){
+                //printf("not NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, uh));
+                //printf("%s\n", uh);
+            }
+            else{
+                uh = (char *)malloc(sizeof(char));
+                //printf("IS NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, $3));
+                //printf("%s\n", uh);
+            }
+        }
+        | term
+        {
+            //$$ = $1;
+            //printf("[Parser]:We've seen an ID starting an expression\n"); 
+        }
+   ;
+
+term    :   term mul_op factor
+        {
+            //printf("[Parser]:term mul_op factor\n");
+            //printf("[Parser]:%s %s %s;\n", $1,$2,$3);
+            //uh = (char *)malloc(sizeof(char));
+            if(uh != NULL){
+                //printf("not NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, uh));
+                //printf("%s\n", uh);
+            }
+            else{
+                uh = (char *)malloc(sizeof(char));
+                //printf("IS NULL\n");
+                sprintf(uh, "r%d", generate_temp_expression($1, $2, $3));
+                //printf("%s\n", uh);
+            }
+        }
+        | factor
+        {
+            //$$ = $1;
+            //printf("[Parser]:Single factor\n");
+        }
+    ;
+
+factor  :   factor EXPONENT atom
+        {
+            //printf("[Parser]:factor EXPONENT atom\n");
+            //printf("[Parser]:%s ** %s;\n", $1,$3);
+            tempS = generate_exponentiation($1, $3);
+            //$$ = tempS;
+            //printf("Exponent register is %s\n", tempS);
+        }
+        | atom
+        {
+            //$$ = $1;
+           // printf("[Parser]:atom\n");
+        }
+    ;
+
+atom    :   ID
+        {
+            $$ = strdup($1->current->key.c_str());
+            //printf("[Parser]:ID = %s\n", strdup($1->current->key.c_str()));
+        }
+        |   INTLITERAL
+        {
+            tempS = (char*)malloc(sizeof(char)*50);
+            sprintf(tempS,"%d",$1);
+            $$ = tempS;
+            //printf("[Parser]:INTLITERAL is %d\n",$1);
+        }
+        |   '(' expression ')'
+        {
+            //printf("[Parser]:(expression)\n");
+        }
+    ;
+
+add_op  :   '+' {$$ = "+";}
+        |   '-' {$$ = "-";}
+        ;
+
+mul_op :   '*' {$$ = "*";}
+        |   '/'{$$ = "/";}
+        ;
+%%
+
+/* For basic assignment. 
+ * Should produce something like:
+ *      '%s = %d\n'
+ */
+int generate_temp_expression(char *a, char *b, char *c)
+{
+    /*  write a statment of the form 
+        
+        x = 17;   
+    */
+
+    if(searchRegisters(a) != -1){
+        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        sprintf(a, "r%d", searchRegisters(a));
+    }
+    /*if(searchRegisters(b) != -1){
+        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        sprintf(b, "r%d", searchRegisters(b));
+    }*/
+        //printf ("is it getting down here: %d\n",searchRegisters(c));
+    if(searchRegisters(c) != -1){
+        //printf("its in the second if");
+        sprintf(c, "r%d", searchRegisters(c));
+    }
+    printf("r%d = %s %s %s;\n", registerNumber, a, b, c);
+    registerNumber++;
+    //printingThings();
+    //searchRegisters(a);
+    return (registerNumber-1);
+}
+
+void generate_expression(const char *str, char *rhs)
+{
+    if(searchRegisters(rhs) != -1){
+        printf("r%d = r%d;\n", registerNumber, searchRegisters(rhs));
+        tempR[registerNumber] = (char)str[0];
+        registerNumber++;
+        //printingThings();
+        searchRegisters(str);
+    }
+    else{
+        printf("r%d = %s;\n", registerNumber, rhs);
+        tempR[registerNumber] = (char)str[0];
+        registerNumber++;
+        //printingThings();
+        searchRegisters(str);
+    }
+}
+
+/*
+ * handles register assignment and logic for exponentiation
+ */
+char * generate_exponentiation(char *base, char *exponent)
+{
+    int temp1,temp2,temp3;//for remembering registers
+    char tempStr[50];
+    char returnReg[50];
+    strcpy(returnReg,"r");
+
+    //exponent register
+    if(checkIfVarIsRegister(exponent) == 0) {
+        printf("r%d = %s;\n", registerNumber, exponent);
+        temp1 = registerNumber;
+        registerNumber++;
+    } else {
+        printf("r%d = r%d;\n", registerNumber, ++registerNumber);
+        temp1 = registerNumber;
+        registerNumber++;
+    }
+
+    //base register
+    if(checkIfVarIsRegister(base) == 0) {
+        printf("r%d = %s;\n", registerNumber, base);
+        temp2 = registerNumber;
+        registerNumber++;
+    } else {
+        if(searchRegisters(base) != -1){
+            printf("r%d = r%d;\n", registerNumber, searchRegisters(base));
+            temp2 = registerNumber;
+            registerNumber++;
+        }
+        else{
+            printf("r%d = r%d;\n", registerNumber, registerNumber++);
+            temp2 = registerNumber;
+            registerNumber++;
+        }
+    }
+
+    //constant multiplier
+    printf("r%d = 1;\n", registerNumber);
+    temp3 = registerNumber;
+    registerNumber++;
+
+    printf("\nL1:\n");
+    printf("\tr%d = r%d * r%d;\n", temp3, temp2, temp3);
+    printf("\tr%d = r%d - 1;\n", temp1, temp1);
+    printf("\tif(r%d>r500) goto L1;\n", temp1);//r500 is reserved as 0
+
+    sprintf(tempStr,"%d",temp3);//convert from int to string
+
+    strncat(returnReg,tempStr,strlen(tempStr));
+
+    return returnReg;
+
+}
+
+void generate_output(const char *var)
+{
+    if(searchRegisters(var) != -1){
+        char temp[50] = "printf(\"%%s\",";
+        char *tempnum;
+        tempnum = (char*)malloc(sizeof(char));
+        sprintf(tempnum, "r%d", searchRegisters(var));
+        strcat(temp,tempnum);
+        strcat(temp,");");
+        printf(temp);
+        printf("\n");
+    }
+    else{
+        char temp[50] = "printf(\"%%s\",";
+        strcat(temp,var);
+        strcat(temp,");");
+        printf(temp);
+        printf("\n");
+    }
+}
+
+int checkIfVarIsRegister(char *s)
+{
+    regex_t regex;
+    int reti;
+
+    reti = regcomp(&regex, "^[0-9]+",REG_EXTENDED);
+    if (reti) {
+        fprintf(stderr, "Could not compile regex\n");
+        exit(1);
+    }
+    reti = regexec(&regex, s, 0, NULL, 0);
+    if(!reti) {
+        //printf("[Parser]:var is int\n");
+        return 0;
+    } else if(reti == REG_NOMATCH) {
+        //printf("[Parser]:var is register\n");
+        return 1;
+    }
+
+    regfree(&regex);
+}
+
+void printingThings(){
+    for(int i = 0; i<=registerNumber; i++){
+        printf("%c ", tempR[i]);
+    }
+}
+int searchRegisters(const char *target){
+    for(int x = 0; x<=registerNumber; x++){
+        char temp = tempR[x];
+        char temp2 = (char)target[0];
+        if(temp == temp2){
+            //printf("IT IS HERE: %c\n", (char)target[0]);
+            return x;
+        }
+        else{
+            //printf("ITS NOT FOUND YO\n");
+        }
+    }
+    return -1;
+}
+void yyerror(const char *s)
+{
+        fflush(stdout);
+        printf("Syntax Error: %s\n",s);
+}
