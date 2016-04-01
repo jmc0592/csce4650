@@ -59,9 +59,11 @@ extern "C" int yylex();
 										return NEQ;
 									}
 "int"								{	printf("[Lexor]:Found 'int'\n");
+										yylval.stringstuff = yytext;
 										return (INT);
 									}
 "char"								{	printf("[Lexor]:Found 'char'\n");
+										yylval.stringstuff = yytext;
 										return (CHAR);
 									}
 "bool"								{	printf("[Lexor]:Found 'bool'\n");
@@ -69,7 +71,15 @@ extern "C" int yylex();
 									}
 "void"								{	printf("[Lexor]:Found 'void'\n");
 										return (VOID);
-									}																																																															
+									}
+"quit"								{
+										printf("[Lexor]:Found 'quit'\n");
+										return QUIT;
+									}			
+"return"							{
+										printf("[Lexor]:Found 'return'\n");
+										return RETURN;
+									}																																																																														
 
 {Letter}({Letter}|{Digit}|_)*		{ 
 										printf("[Lexor]: found 'NAME'\n");
@@ -81,6 +91,10 @@ extern "C" int yylex();
 										yylval.intstuff = atoi(yytext);
 				          				return (INTLITERAL);
 				          			}
+\"([^\\\"]|\\.)*\"					{
+										printf("[Lexor]: found 'STRINGLITERAL'\n");
+										return STRINGLITERAL;
+									}				          			
 ","									{	printf("[Lexor]: found ','\n");
 										return (',');
 									}				          			

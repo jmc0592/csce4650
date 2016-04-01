@@ -1,3 +1,7 @@
+/*
+ * gram.prod
+ * NAME is taking place of what previously ID. 
+ */
 %start program
 
 
@@ -9,7 +13,7 @@ func_list:   func
             |   func func_list
     ;
 
-func:   NAME '(' parm_list ')' ':' type dec_list s_block
+func:   NAME '(' parm_list ')' ':' type {printf("[Parser][func]:push new STL\n");} dec_list s_block
     ;
 
 parm_list:   NAME
@@ -19,10 +23,23 @@ parm_list:   NAME
 
 dec_list:   decl
             | decl ';' dec_list
-            |  /* goes to "nothing", i.expression. empty
-				   string */ 
+            |  /* goes to "nothing", i.expression. empty string */
+    ;         
 decl:   type NAME
+        {
+            stackCopy->curr->symbolRecord.current->setType(strdup($1));
+            stackCopy->curr->symbolRecord.current->setOffset(g_offSet);
+            printf("[Parser][decl]:inserted type and offset to stack\n");
+            if(strcmp(strdup($1), "int") == 0) {
+                g_offSet = g_offSet + 4;//4 bytes for an int
+            } else {
+                g_offSet = g_offSet + 1;//1 bytes for a char
+            }
+        }
         |   type NAME '['size_list']'
+        {
+
+        }
     ;
 
 size_list:   INTLITERAL
@@ -30,12 +47,25 @@ size_list:   INTLITERAL
     ;
 
 type:   INT
+        {
+            $$ = strdup($1);
+        }
         |   CHAR
+        {
+            $$ = strdup($1);
+        }
         |   BOOL
+        {
+            $$ = strdup($1);
+        }
         |   VOID
+        {
+            $$ = strdup($1);
+        }
     ;
 
-s_block: BEG dec_list stmts END
+s_block: BEG {printf("[Parser][s_block]:push new STL\n");} dec_list stmts END
+    ;
 
 stmts:  statement
         |   statement stmts
@@ -47,9 +77,12 @@ statement:  id '=' expression
     |   IF '(' conditional_expr ')' s_block
     |   IF '(' conditional_expr ')' s_block ELSE s_block
     |   DO INTLITERAL NAME '=' do_list stmts end_do
+    |   RETURN primary
+    |   QUIT
     ;
 
 end_do:  INTLITERAL CONTINUE
+    ;
 
 conditional_expr:    expression rel_op expression
                     |   NOT '(' conditional_expr ')'

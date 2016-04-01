@@ -6,4 +6,3 @@ This should create the 'compiler' executable file. You can then test it with var
 
 The compiler will send the CMachine code to stdout. 
 
-NOTE: Because this was fixed last minute, I used r500 as the register to be reserved for 0 so I didn’t have to rewrite a bunch of other stuff.
