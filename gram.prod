@@ -13,7 +13,10 @@ func_list:   func
             |   func func_list
     ;
 
-func:   NAME '(' parm_list ')' ':' type {printf("[Parser][func]:push new STL\n");} dec_list s_block
+func:   NAME '(' parm_list ')' ':' type {printf("[Parser][func]: push new STL\n"); stackCopy->push();} dec_list s_block
+        {
+            stackCopy->pop();
+        }
     ;
 
 parm_list:   NAME
@@ -29,7 +32,7 @@ decl:   type NAME
         {
             stackCopy->curr->symbolRecord.current->setType(strdup($1));
             stackCopy->curr->symbolRecord.current->setOffset(g_offSet);
-            printf("[Parser][decl]:inserted type and offset to stack\n");
+            printf("[Parser][decl]: '%s' inserted type and offset to stack\n", strdup($2->current->key.c_str()));
             if(strcmp(strdup($1), "int") == 0) {
                 g_offSet = g_offSet + 4;//4 bytes for an int
             } else {
@@ -64,7 +67,10 @@ type:   INT
         }
     ;
 
-s_block: BEG {printf("[Parser][s_block]:push new STL\n");} dec_list stmts END
+s_block: BEG {printf("[Parser][s_block]: push new STL\n"); stackCopy->push();} dec_list stmts END
+        {
+            stackCopy->pop();
+        }
     ;
 
 stmts:  statement
