@@ -1,6 +1,6 @@
 /*
  * gram.prod
- * NAME is taking place of what previously ID. 
+ * NAME is taking place of what was previously ID. 
  */
 %start program
 
@@ -15,6 +15,7 @@ func_list:   func
 
 func:   NAME '(' parm_list ')' ':' type {printf("[Parser][func]: push new STL\n"); stackCopy->push();} dec_list s_block
         {
+            printf("[Parser][func]: pop new STL\n");
             stackCopy->pop();
         }
     ;
@@ -32,21 +33,30 @@ decl:   type NAME
         {
             stackCopy->curr->symbolRecord.current->setType(strdup($1));
             stackCopy->curr->symbolRecord.current->setOffset(g_offSet);
-            printf("[Parser][decl]: '%s' inserted type and offset to stack\n", strdup($2->current->key.c_str()));
-            if(strcmp(strdup($1), "int") == 0) {
-                g_offSet = g_offSet + 4;//4 bytes for an int
-            } else {
-                g_offSet = g_offSet + 1;//1 bytes for a char
-            }
+            printf("[Parser][decl]: '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()), strdup($1), g_offSet);
+            
+            updateOffSet(strdup($1));
         }
         |   type NAME '['size_list']'
         {
-
+            calcArrayOffSet(strdup($1));
+            printf("[Parser][decl]: sizeList list contains ... \n");
+            for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
+            {
+                cout << *list_iter << endl;
+            }
+            printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
         }
     ;
 
-size_list:   INTLITERAL
+size_list:  INTLITERAL
+            {
+                g_sizeList.push_front($1);
+            }
             |   INTLITERAL ',' size_list
+            {
+                g_sizeList.push_front($1);
+            }
     ;
 
 type:   INT
@@ -69,6 +79,7 @@ type:   INT
 
 s_block: BEG {printf("[Parser][s_block]: push new STL\n"); stackCopy->push();} dec_list stmts END
         {
+            printf("[Parser][s_block]: pop new STL\n");
             stackCopy->pop();
         }
     ;
@@ -78,13 +89,30 @@ stmts:  statement
     ;
 
 statement:  id '=' expression
-    |   NAME '(' expr_list ')'
-    |   id '=' conditional_expr
-    |   IF '(' conditional_expr ')' s_block
-    |   IF '(' conditional_expr ')' s_block ELSE s_block
-    |   DO INTLITERAL NAME '=' do_list stmts end_do
-    |   RETURN primary
-    |   QUIT
+            {
+                printf("[Parser][statement]: id = expression;\n");                
+                generate_expression($1, $3);
+            }
+            |   NAME '(' expr_list ')'
+            |   id '=' conditional_expr
+            |   IF '(' conditional_expr ')' s_block
+            {
+                printf("[Parser][statement]: if found. counter = %d\n", g_ifCounter);
+                g_ifCounter++;
+            }
+            |   IF '(' conditional_expr ')' s_block ELSE s_block
+            {
+                printf("[Parser][statement]: if found. counter = %d\n", g_ifCounter);
+                g_ifCounter++;                
+            }
+            |   DO INTLITERAL NAME '=' do_list stmts end_do
+            {
+                printf("[Parser][statement]: loop found. counter = %d\n", g_loopCounter);
+                g_loopCounter++;
+
+            }
+            |   RETURN primary
+            |   QUIT
     ;
 
 end_do:  INTLITERAL CONTINUE
@@ -139,7 +167,13 @@ primary:    id
     ;
 
 id: NAME
+    {
+        $$ = strdup($1->current->key.c_str());
+    }
     |   NAME '[' expr_list ']' 
+    {
+        $$ = strdup($1->current->key.c_str());
+    }
     ;
 
 rel_op:  GT
@@ -175,6 +209,69 @@ uop:    '-'
         |   '~'
     ;
 %%
+
+void calcArrayOffSet(char *type)
+{
+    list<int> rowMajor;
+    int temp;
+
+    if(strcmp(type, "int") == 0) {
+        rowMajor.push_front(4);
+    }
+    else {
+        rowMajor.push_front(1);
+    }
+
+    for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
+    {
+        temp = (*list_iter) * rowMajor.front();
+        rowMajor.push_front(temp);
+        cout << *list_iter << endl;
+        cout << rowMajor.front() << endl;
+    }
+
+    rowMajor.pop_front();//ugly fix for removing unneeded elemnent
+}
+void updateOffSet(char *type)
+{
+    if(strcmp(type, "int") == 0) {
+        g_offSet = g_offSet + 4;//4 bytes for an int
+    } else {
+        g_offSet = g_offSet + 1;//1 bytes for a char
+    }
+}
+int searchRegisters(const char *target){
+    for(int x = 0; x<=registerNumber; x++){
+        char temp = tempR[x];
+        char temp2 = (char)target[0];
+        if(temp == temp2){
+            //printf("IT IS HERE: %c\n", (char)target[0]);
+            return x;
+        }
+        else{
+            //printf("ITS NOT FOUND YO\n");
+        }
+    }
+    return -1;
+}
+
+void generate_expression(const char *str, char *rhs)
+{
+    if(searchRegisters(rhs) != -1){
+        printf("r%d = r%d;\n", registerNumber, searchRegisters(rhs));
+        tempR[registerNumber] = (char)str[0];
+        registerNumber++;
+        //printingThings();
+        searchRegisters(str);
+    }
+    else{
+        printf("r%d = %s;\n", registerNumber, rhs);
+        tempR[registerNumber] = (char)str[0];
+        registerNumber++;
+        //printingThings();
+        searchRegisters(str);
+    }
+}
 
 void yyerror(const char *s)
 {

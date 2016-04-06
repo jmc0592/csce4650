@@ -36,7 +36,7 @@ int main()
         
 	printf("\nmain()\n");
         printf("{\n");
-	printf("r500 = 0;\n");//reserve r500 for 0
+	printf("r0 = 0;\n");//reserve r0 for 0
 
     // Initialize key function 
     int yyparse();
