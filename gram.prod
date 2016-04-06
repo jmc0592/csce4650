@@ -39,13 +39,16 @@ decl:   type NAME
         }
         |   type NAME '['size_list']'
         {
-            calcArrayOffSet(strdup($1));
+            stackCopy->curr->symbolRecord.current->setType(strdup($1));
+            stackCopy->curr->symbolRecord.current->setOffset(g_offSet);
             printf("[Parser][decl]: sizeList list contains ... \n");
             for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
             {
                 cout << *list_iter << endl;
             }
             printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
+            calcArrayOffSet(strdup($1));
+            g_sizeList.clear();
         }
     ;
 
@@ -215,6 +218,7 @@ void calcArrayOffSet(char *type)
     list<int> rowMajor;
     int temp;
 
+    //4 bytes for int, 1 byte for char
     if(strcmp(type, "int") == 0) {
         rowMajor.push_front(4);
     }
@@ -222,16 +226,31 @@ void calcArrayOffSet(char *type)
         rowMajor.push_front(1);
     }
 
+    //logic for creating node for array offsets 
     for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
     {
         temp = (*list_iter) * rowMajor.front();
         rowMajor.push_front(temp);
-        cout << *list_iter << endl;
-        cout << rowMajor.front() << endl;
     }
 
     rowMajor.pop_front();//ugly fix for removing unneeded elemnent
+
+    g_offSet = getSumOfRowMajor(rowMajor);
 }
+
+//might need to change. going to talk to sweany about this.
+int getSumOfRowMajor(list<int> l)
+{
+    int sum = 0;
+    for(list<int>::iterator list_iter = l.begin(); list_iter != l.end(); list_iter++)
+    {
+        sum = sum + (*list_iter);
+        cout << "[Parser][getSumOfRowMajor]: node = " << *list_iter << endl;
+    }
+    cout << "[Parser][getSumOfRowMajor]: sum = " << sum << endl;    
+    return sum;
+}
+
 void updateOffSet(char *type)
 {
     if(strcmp(type, "int") == 0) {

@@ -20,6 +20,7 @@ list<int> g_sizeList;
 void generate_expression(const char *, char *);
 void updateOffSet(char *);
 void calcArrayOffSet(char *);
+int getSumOfRowMajor(list<int> l);
 int searchRegisters(const char *);
 int registerNumber = 4;//reserve r0 for 0. r1, r2, r3 for operations
 char tempR[100];
