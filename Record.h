@@ -14,6 +14,7 @@ public:
 	Record *after;
 	string key;
     string type;
+    int iValue;
     int offset;
 };
 #endif

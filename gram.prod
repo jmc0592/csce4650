@@ -44,7 +44,7 @@ decl:   type NAME
             printf("[Parser][decl]: sizeList list contains ... \n");
             for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
             {
-                cout << *list_iter << endl;
+                cout << "[Parser][decl]: " << *list_iter << endl;
             }
             printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
             calcArrayOffSet(strdup($1));
@@ -139,33 +139,74 @@ expr_list:   expression
     ;
 
 expression:  expression bop bit_term
-    |   bit_term
+            |   bit_term
+            {
+                $$ = strdup($1);
+            }    
     ;
 
 bit_term:    bit_term shift_op shift_term
             |   shift_term
+            {
+                $$ = strdup($1);
+            }            
     ;
 
 shift_term:  shift_term add_op term
             |   term
+            {
+                $$ = strdup($1);
+            }
     ;
 
 term:   term mul_op factor
+        {
+            if(expressionReg != NULL){
+                //printf("not NULL\n");
+                sprintf(expressionReg, "r%d", generate_temp_expression($1, $2, expressionReg));
+                //printf("%s\n", expressionReg);
+            }
+            else{
+                expressionReg = (char *)malloc(sizeof(char));
+                //printf("IS NULL\n");
+                sprintf(expressionReg, "r%d", generate_temp_expression($1, $2, $3));
+                //printf("%s\n", expressionReg);
+            }            
+        }
         |   factor
+        {
+            $$ = strdup($1);
+        }
     ;
 
 factor: factor EXPONENT u_operand
         |   u_operand
+        {
+            $$ = strdup($1);
+        }
     ;
 
 u_operand:   uop primary
             |   primary
+            {
+                $$ = strdup($1);
+            }
     ;
 
 primary:    id
+            {
+                $$ = strdup($1);
+                printf("[Parser][primary]: id is %s\n", strdup($1));
+            }
             |   NAME '(' expr_list ')'   
             |   '(' expression ')'
             |   INTLITERAL		/* could be any integer number */
+            {
+                tempS = (char*)malloc(sizeof(char)*50);
+                sprintf(tempS,"%d",$1);
+                $$ = tempS;
+                printf("[Parser][primary]: INTLITERAL is %d\n",$1);                
+            }
             |   STRINGLITERAL	/* any quoted string, like "ET phone home" */
     ;
 
@@ -187,29 +228,29 @@ rel_op:  GT
         |   NEQ
     ;
 
-bop:    '&'
-        |   '|'
-        |   '^'
+bop:    '&' {$$ = "&";}
+        |   '|' {$$ = "|";}
+        |   '^' {$$ = "^";}
     ;
 
-shift_op:    "<<"
-            |   ">>"
+shift_op:    "<<" {$$ = "<<";}
+            |   ">>" {$$ = ">>";}
     ;
 
-mul_op:  '*'
-        |   '/'
-        |   '%'
+mul_op:  '*' {$$ = "*";}
+        |   '/' {$$ = "/";}
+        |   '%' {$$ = "%";}
     ;
 
-add_op:  '+'
-        |   '-'
+add_op:  '+' {$$ = "+";}
+        |   '-' {$$ = "-";}
     ;
 
-uop:    '-'
-        |   "++"
-        |   "--"
-        |   '&'
-        |   '~'
+uop:    '-' {$$ = "-";}
+        |   "++" {$$ = "++";}
+        |   "--" {$$ = "--";}
+        |   '&' {$$ = "&";}
+        |   '~' {$$ = "~";}
     ;
 %%
 
@@ -233,9 +274,9 @@ void calcArrayOffSet(char *type)
         rowMajor.push_front(temp);
     }
 
-    rowMajor.pop_front();//ugly fix for removing unneeded elemnent
+//    rowMajor.pop_front();//ugly fix for removing unneeded elemnent
 
-    g_offSet = getSumOfRowMajor(rowMajor);
+    g_offSet = rowMajor.front();
 }
 
 //might need to change. going to talk to sweany about this.
@@ -274,8 +315,31 @@ int searchRegisters(const char *target){
     return -1;
 }
 
+int generate_temp_expression(char *a, char *b, char *c)
+{
+    if(searchRegisters(a) != -1){
+        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        sprintf(a, "r%d", searchRegisters(a));
+    }
+    /*if(searchRegisters(b) != -1){
+        //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
+        sprintf(b, "r%d", searchRegisters(b));
+    }*/
+        //printf ("is it getting down here: %d\n",searchRegisters(c));
+    if(searchRegisters(c) != -1){
+        //printf("its in the second if");
+        sprintf(c, "r%d", searchRegisters(c));
+    }
+    printf("r%d = %s %s %s;\n", registerNumber, a, b, c);
+    registerNumber++;
+    //printingThings();
+    //searchRegisters(a);
+    return (registerNumber-1);
+}
+
 void generate_expression(const char *str, char *rhs)
 {
+    printf("[Parser][generate_expression]: rhs values = %s\n", rhs);
     if(searchRegisters(rhs) != -1){
         printf("r%d = r%d;\n", registerNumber, searchRegisters(rhs));
         tempR[registerNumber] = (char)str[0];
@@ -285,6 +349,7 @@ void generate_expression(const char *str, char *rhs)
     }
     else{
         printf("r%d = %s;\n", registerNumber, rhs);
+        printf("*(globalData + %d) = r%d\n", g_offSet, registerNumber);
         tempR[registerNumber] = (char)str[0];
         registerNumber++;
         //printingThings();
