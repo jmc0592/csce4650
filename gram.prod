@@ -98,14 +98,15 @@ statement:  id '=' expression
             }
             |   NAME '(' expr_list ')'
             |   id '=' conditional_expr
-            |   IF '(' conditional_expr ')' s_block
+            |   if_start
             {
-                printf("[Parser][statement]: if found. counter = %d\n", g_ifCounter);
+                printf("IfEnd%d:\n", g_ifCounter);
                 g_ifCounter++;
             }
-            |   IF '(' conditional_expr ')' s_block ELSE s_block
+            |   if_start ELSE s_block
             {
-                printf("[Parser][statement]: if found. counter = %d\n", g_ifCounter);
+                printf("[Parser][statement]: else body\n");
+                printf("IfEnd%d:\n", g_ifCounter);                
                 g_ifCounter++;                
             }
             |   DO INTLITERAL NAME '=' do_list stmts end_do
@@ -118,13 +119,23 @@ statement:  id '=' expression
             |   QUIT
     ;
 
+if_start:   IF '(' conditional_expr ')' 
+                {
+                    printf("IfStart%d:\n", g_ifCounter);
+                }
+            s_block
+                {printf("[Parser][if_start]: then body\n");}
+    ;
+
 end_do:  INTLITERAL CONTINUE
     ;
 
 conditional_expr:    expression rel_op expression
+                    {printf("[Parser][conditional_expr]: exp rel_op exp\n");}
                     |   NOT '(' conditional_expr ')'
                     |   conditional_expr AND '(' conditional_expr ')'
                     |   conditional_expr AND expression rel_op expression
+                    {printf("[Parser][conditional_expr]: conditional_expr AND exp rel_op exp\n");}
                     |   conditional_expr OR '(' conditional_expr ')'
                     |   conditional_expr OR expression rel_op expression
     ;

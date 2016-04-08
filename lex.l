@@ -31,6 +31,9 @@ extern "C" int yylex();
 "continue"							{	printf("[Lexor]: Found 'continue'\n");
 										return CONTINUE;	
 									}
+"if"								{	printf("[Lexor]: Found 'if'\n");
+										return IF;
+									}									
 "else"								{	printf("[Lexor]: Found 'else'\n");
 										return ELSE;	
 									}
@@ -39,7 +42,10 @@ extern "C" int yylex();
 									}
 "not"								{	printf("[Lexor]: Found 'not'\n");
 										return NOT;	
-									}																																				
+									}
+"and"								{	printf("[Lexor]: Found 'and'\n");
+										return AND;
+									}																																													
 ".lt."								{	printf("[Lexor]: Found '.lt.'\n");
 										return LT;
 									}

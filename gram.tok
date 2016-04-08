@@ -104,3 +104,4 @@ char* expressionReg;
 %type <stringstuff> mul_op
 %type <stringstuff> add_op
 %type <stringstuff> statement /* statement_list */
+%type <stringstuff> if_start
