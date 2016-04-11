@@ -119,8 +119,9 @@ statement:  id '=' expression
             |   QUIT
     ;
 
-if_start:   IF '(' conditional_expr ')' 
+if_start:   IF '(' {printf("if(");}conditional_expr ')' 
                 {
+                    printf(") goto IfEnd%d;\n", g_ifCounter);
                     printf("IfStart%d:\n", g_ifCounter);
                 }
             s_block
@@ -131,7 +132,10 @@ end_do:  INTLITERAL CONTINUE
     ;
 
 conditional_expr:    expression rel_op expression
-                    {printf("[Parser][conditional_expr]: exp rel_op exp\n");}
+                    {
+                        printf("[Parser][conditional_expr]: exp rel_op exp\n");
+                        printf("%s %s %s", strdup($1), strdup($2), strdup($3));
+                    }
                     |   NOT '(' conditional_expr ')'
                     |   conditional_expr AND '(' conditional_expr ')'
                     |   conditional_expr AND expression rel_op expression
@@ -164,6 +168,19 @@ bit_term:    bit_term shift_op shift_term
     ;
 
 shift_term:  shift_term add_op term
+            {
+            if(expressionReg != NULL){
+                //printf("not NULL\n");
+                sprintf(expressionReg, "r%d", generate_temp_expression($1, $2, expressionReg));
+                //printf("%s\n", expressionReg);
+            }
+            else{
+                expressionReg = (char *)malloc(sizeof(char));
+                //printf("IS NULL\n");
+                sprintf(expressionReg, "r%d", generate_temp_expression($1, $2, $3));
+                //printf("%s\n", expressionReg);
+            }                
+            }
             |   term
             {
                 $$ = strdup($1);
@@ -231,12 +248,12 @@ id: NAME
     }
     ;
 
-rel_op:  GT
-        |   GE
-        |   LE
-        |   LT
-        |   EQ
-        |   NEQ
+rel_op:  GT {$$ = ">"}
+        |   GE {$$ = ">="}
+        |   LE {$$ = "<=";}
+        |   LT {$$ = "<";}
+        |   EQ {$$ = "=";}
+        |   NEQ {$$ = "!=";}
     ;
 
 bop:    '&' {$$ = "&";}
