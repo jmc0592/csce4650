@@ -13,7 +13,7 @@ func_list:   func
             |   func func_list
     ;
 
-func:   NAME '(' parm_list ')' ':' type {printf("[Parser][func]: push new STL\n"); stackCopy->push();} dec_list s_block
+func:   NAME '(' parm_list ')' ':' type {stackCopy->push();} dec_list s_block
         {
             printf("[Parser][func]: pop new STL\n");
             stackCopy->pop();
@@ -80,7 +80,7 @@ type:   INT
         }
     ;
 
-s_block: BEG {printf("[Parser][s_block]: push new STL\n"); stackCopy->push();} dec_list stmts END
+s_block: BEG {stackCopy->push();} dec_list stmts END
         {
             printf("[Parser][s_block]: pop new STL\n");
             stackCopy->pop();
@@ -109,11 +109,9 @@ statement:  id '=' expression
                 printf("IfEnd%d:\n", g_ifCounter);                
                 g_ifCounter++;                
             }
-            |   DO INTLITERAL NAME '=' do_list stmts end_do
+            |   DO {g_loopCounterStack.push(g_loopCounter);} INTLITERAL NAME '=' do_list {printf("StartDoLoop%d:\n",g_loopCounter);g_loopCounter++;} stmts end_do
             {
                 printf("[Parser][statement]: loop found. counter = %d\n", g_loopCounter);
-                g_loopCounter++;
-
             }
             |   RETURN primary
             |   QUIT
@@ -125,10 +123,18 @@ if_start:   IF '(' {printf("if(");}conditional_expr ')'
                     printf("IfStart%d:\n", g_ifCounter);
                 }
             s_block
-                {printf("[Parser][if_start]: then body\n");}
+                {
+                printf("[Parser][if_start]: then body\n");
+                }
     ;
 
 end_do:  INTLITERAL CONTINUE
+        {
+            printf("[Parser][end_do]: INTLITERAL CONTINE\n");
+            printf("if(REG<REG) goto StartDoLoop%d;\n", g_loopCounterStack.top());
+            printf("EndDoLoop%d:\n", g_loopCounterStack.top());
+            g_loopCounterStack.pop();
+        }
     ;
 
 conditional_expr:    expression rel_op expression
@@ -139,7 +145,9 @@ conditional_expr:    expression rel_op expression
                     |   NOT '(' conditional_expr ')'
                     |   conditional_expr AND '(' conditional_expr ')'
                     |   conditional_expr AND expression rel_op expression
-                    {printf("[Parser][conditional_expr]: conditional_expr AND exp rel_op exp\n");}
+                    {
+                    printf("[Parser][conditional_expr]: conditional_expr AND exp rel_op exp\n");
+                    }
                     |   conditional_expr OR '(' conditional_expr ')'
                     |   conditional_expr OR expression rel_op expression
     ;

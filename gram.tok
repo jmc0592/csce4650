@@ -9,6 +9,7 @@
 #include <regex.h>
 #include "Record.h"
 #include <list>
+#include <stack>
 using namespace std;
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -17,6 +18,8 @@ int g_offSet = 0;//global used to keep byte offset
 int g_ifCounter;
 int g_loopCounter;
 list<int> g_sizeList;
+stack<int> g_loopCounterStack;//used for nested loops
+stack<int> g_ifCounterStack;//used for nested ifs
 void generate_expression(const char *, char *);
 void updateOffSet(char *);
 void calcArrayOffSet(char *);

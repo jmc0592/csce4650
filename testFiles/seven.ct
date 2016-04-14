@@ -25,15 +25,7 @@ begin
 
     if( B .lt. x  and B .neq. 0)
     begin
-    if( x .eq. 0 )
-    begin
-            printLine()
-        printi(x)
-    end
-    else
-    begin
-        printi(x)
-    end
+    printi(x)
     end
     printLine()     
 end
