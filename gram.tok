@@ -17,6 +17,7 @@ void yyerror(const char*);
 int g_offSet = 0;//global used to keep byte offset
 int g_ifCounter;
 int g_loopCounter;
+int g_elseFlag = 0;
 list<int> g_sizeList;
 stack<int> g_loopCounterStack;//used for nested loops
 stack<int> g_ifCounterStack;//used for nested ifs

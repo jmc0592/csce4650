@@ -20,10 +20,10 @@ int main()
 
     //register declarations
     int i;
-    for(i = 0; i <= 500; i++) {
+    for(i = 0; i <= 20; i++) {
         if(i == 0)
             printf("int r0,");
-        else if( i != 500) 
+        else if( i != 20) 
             printf("r%d,",i);
         else
             printf("r%d;\n",i);

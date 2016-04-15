@@ -88,7 +88,7 @@ extern "C" int yylex();
 									}																																																																														
 
 {Letter}({Letter}|{Digit}|_)*		{ 
-										printf("[Lexor]: Found 'NAME'\n");
+										printf("[Lexor]: Found 'NAME' = %s\n",strdup(yytext));
 										process_id();
 					  					return (NAME);		
 					  				}

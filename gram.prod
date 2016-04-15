@@ -44,7 +44,7 @@ decl:   type NAME
             printf("[Parser][decl]: sizeList list contains ... \n");
             for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
             {
-                cout << "[Parser][decl]: " << *list_iter << endl;
+                printf("[Parser][decl]: %d\n",*list_iter);
             }
             printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
             calcArrayOffSet(strdup($1));
@@ -97,18 +97,19 @@ statement:  id '=' expression
                 generate_expression($1, $3);
             }
             |   NAME '(' expr_list ')'
-            |   id '=' conditional_expr
-            |   if_start
+            |   id '=' conditional_expr            
+            |   {g_elseFlag = 0;g_ifCounterStack.push(g_ifCounter); g_ifCounter++;} if_start
             {
-                printf("IfEnd%d:\n", g_ifCounter);
-                g_ifCounter++;
+                printf("[Parser]: if body\n");
+                printf("IfEnd%d:\n", g_ifCounterStack.top());
+                g_ifCounterStack.pop();                                
             }
-            |   if_start ELSE s_block
+            |   {g_elseFlag = 1; g_ifCounterStack.push(g_ifCounter); g_ifCounter++;} if_start ELSE s_block
             {
                 printf("[Parser][statement]: else body\n");
-                printf("IfEnd%d:\n", g_ifCounter);                
-                g_ifCounter++;                
-            }
+                printf("IfEnd%d:\n", g_ifCounterStack.top());                
+                g_ifCounterStack.pop();                
+            }            
             |   DO {g_loopCounterStack.push(g_loopCounter);} INTLITERAL NAME '=' do_list {printf("StartDoLoop%d:\n",g_loopCounter);g_loopCounter++;} stmts end_do
             {
                 printf("[Parser][statement]: loop found. counter = %d\n", g_loopCounter);
@@ -117,13 +118,16 @@ statement:  id '=' expression
             |   QUIT
     ;
 
-if_start:   IF '(' {printf("if(");}conditional_expr ')' 
+if_start:   IF {printf("IfStart%d:\n", g_ifCounterStack.top());} '(' {printf("if(");} conditional_expr ')' 
                 {
-                    printf(") goto IfEnd%d;\n", g_ifCounter);
-                    printf("IfStart%d:\n", g_ifCounter);
+                    printf(") goto IfThen%d;\n", g_ifCounterStack.top());
+                    if(g_elseFlag == 0) {
+                        printf("goto IfEnd%d;\n", g_ifCounterStack.top());
+                    }
                 }
             s_block
                 {
+                    printf("IfThen%d:\n", g_ifCounterStack.top());
                 printf("[Parser][if_start]: then body\n");
                 }
     ;
