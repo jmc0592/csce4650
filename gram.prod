@@ -98,15 +98,18 @@ statement:  id '=' expression
             }
             |   NAME '(' expr_list ')'
             |   id '=' conditional_expr            
-            |   {g_elseFlag = 0;g_ifCounterStack.push(g_ifCounter); g_ifCounter++;} if_start
+            |   if_start
             {
                 printf("[Parser]: if body\n");
+                printf("IfElse%d:\n",g_ifCounterStack.top());
                 printf("IfEnd%d:\n", g_ifCounterStack.top());
                 g_ifCounterStack.pop();                                
             }
-            |   {g_elseFlag = 1; g_ifCounterStack.push(g_ifCounter); g_ifCounter++;} if_start ELSE s_block
+            |   if_start ELSE s_block
             {
                 printf("[Parser][statement]: else body\n");
+                printf("IfElse%d:\n", g_ifCounterStack.top());
+                printf("ELSE STUFSSSSSSSSSSS\n");
                 printf("IfEnd%d:\n", g_ifCounterStack.top());                
                 g_ifCounterStack.pop();                
             }            
@@ -118,17 +121,17 @@ statement:  id '=' expression
             |   QUIT
     ;
 
-if_start:   IF {printf("IfStart%d:\n", g_ifCounterStack.top());} '(' {printf("if(");} conditional_expr ')' 
+if_start:   IF {g_ifCounterStack.push(g_ifCounter); g_ifCounter++;printf("IfStart%d:\n", g_ifCounterStack.top());} '(' {printf("if(");} conditional_expr ')' 
                 {
                     printf(") goto IfThen%d;\n", g_ifCounterStack.top());
-                    if(g_elseFlag == 0) {
-                        printf("goto IfEnd%d;\n", g_ifCounterStack.top());
-                    }
+                    printf("goto IfElse%d;\n", g_ifCounterStack.top());
                 }
             s_block
                 {
                     printf("IfThen%d:\n", g_ifCounterStack.top());
-                printf("[Parser][if_start]: then body\n");
+                    printf("goto IfEnd%d;\n", g_ifCounterStack.top());
+
+                    printf("[Parser][if_start]: then body\n");
                 }
     ;
 

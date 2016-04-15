@@ -31,7 +31,7 @@ begin
     end
     else
     begin
-        B = 2
+        printInt(x)
     end
     end    
 end
