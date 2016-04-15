@@ -68,6 +68,43 @@ int SymbolTableList::recordSearch(string key)
     return 0;
 }
 
+int SymbolTableList::offsetSearch(string key)
+{
+    Stack *stackCpy = this->addressToStackTop;
+    SymbolTableList *templist = stackCpy->curr;
+    
+    while(templist !=NULL){
+        if(templist->symbolRecord.head != NULL){ //looping starting at the head
+            Record *temp = templist->symbolRecord.head;
+            while(temp->after != NULL){
+                if(temp->key == key){
+                    //cout << key << " is found in symbol table with offset " << temp->offset << endl;
+                    return temp->offset;
+                }
+                temp = temp->after;
+            }
+            if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
+                //cout << key << " is found in symbol table with offset: " << temp->offset << endl;
+                return temp->offset;
+            }
+            else{
+                //cout<<"This table does not contain "<<key<<endl;
+            }
+        }
+        else{
+            //cout<<"There are no records in current stack"<<endl;
+            return -1;
+        }
+        if(templist->prev != NULL){ //moving to new stack
+            templist = templist->prev;
+        }
+        else{
+            return -1;
+        }
+    }
+    return 0;
+}
+
 void SymbolTableList::searchKeyExists() //Temporary function, used for testing and seeing all entries in all symbol tables
 {
     Stack *stackCpy = this->addressToStackTop;
