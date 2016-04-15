@@ -392,7 +392,8 @@ void generate_expression(const char *str, char *rhs)
     }
     else{
         printf("r%d = %s;\n", registerNumber, rhs);
-        printf("*(globalData + %d) = r%d\n", g_offSet, registerNumber);
+        stackCopy->curr->offsetSearch(str);
+        printf("*(globalData + %d) = r%d\n", stackCopy->curr->offsetSearch(str), registerNumber);
         tempR[registerNumber] = (char)str[0];
         registerNumber++;
         //printingThings();
