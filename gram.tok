@@ -10,6 +10,7 @@
 #include "Record.h"
 #include <list>
 #include <stack>
+#include <ctype.h>
 using namespace std;
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -17,7 +18,9 @@ void yyerror(const char*);
 int g_offSet = 0;//global used to keep byte offset
 int g_ifCounter;
 int g_loopCounter;
+char *exprListString;
 list<int> g_sizeList;
+list<char *> g_elementList;
 stack<int> g_loopCounterStack;//used for nested loops
 stack<int> g_ifCounterStack;//used for nested ifs
 void generate_expression(const char *, char *);
@@ -29,6 +32,9 @@ int registerNumber = 4;//reserve r0 for 0. r1, r2, r3 for operations
 char tempR[100];
 char *tempS;
 int generate_temp_expression(char *a, char *b, char *c);
+void calcArrayElementOffset(string);
+int containsNumbers(char *);
+
 
 /***** Probably change structure to be better for this new grammar
 void generate_copy(const char *, int);
@@ -47,6 +53,7 @@ char* expressionReg;
     int intstuff;
     char *stringstuff;
     List *symbolstuff;
+    std::list<char *> *liststuff;
 }
 
 %token <intstuff> INTLITERAL 
@@ -108,3 +115,5 @@ char* expressionReg;
 %type <stringstuff> add_op
 %type <stringstuff> statement /* statement_list */
 %type <stringstuff> if_start
+%type <stringstuff> element_list
+%type <stringstuff> element
