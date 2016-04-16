@@ -456,6 +456,10 @@ int generate_temp_expression(char *a, char *b, char *c)
         //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
         sprintf(a, "r%d", searchRegisters(a));
     }
+    else if(containsNumber(a) != 1){
+        printf("r%d = %s\n", registerNumber, a);
+        registerNumber++;
+    }
     /*if(searchRegisters(b) != -1){
         //printf("HERE IS THE THINKY FOR searchRegisters: %d\n", searchRegisters(a));
         sprintf(b, "r%d", searchRegisters(b));
@@ -465,6 +469,11 @@ int generate_temp_expression(char *a, char *b, char *c)
         //printf("its in the second if");
         sprintf(c, "r%d", searchRegisters(c));
     }
+    else if(){
+        printf("r%d = %s\n", registerNumber, c);
+        registerNumber++;
+    }
+    printf("TH|INGA LIVE HERRRR a is %s, b is %s, c is %s\n", a, b, c);
     printf("r%d = %s %s %s;\n", registerNumber, a, b, c);
     registerNumber++;
     //printingThings();
