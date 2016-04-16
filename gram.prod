@@ -15,7 +15,7 @@ func_list:   func
 
 func:   NAME '(' parm_list ')' ':' type {stackCopy->push();} dec_list s_block
         {
-            printf("[Parser][func]: pop new STL\n");
+            //printf("[Parser][func]: pop new STL\n");
             stackCopy->pop();
         }
     ;
@@ -33,7 +33,7 @@ decl:   type NAME
         {
             stackCopy->curr->symbolRecord.current->setType(strdup($1));
             stackCopy->curr->symbolRecord.current->setOffset(g_offSet);
-            printf("[Parser][decl]: '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()), strdup($1), g_offSet);
+            //printf("[Parser][decl]: '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()), strdup($1), g_offSet);
             
             updateOffSet(strdup($1));
         }
@@ -41,12 +41,12 @@ decl:   type NAME
         {
             stackCopy->curr->symbolRecord.current->setType(strdup($1));
             stackCopy->curr->symbolRecord.current->setOffset(g_offSet);
-            printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
+            //printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
 
-            printf("[Parser][decl]: sizeList list contains ... \n");
+            //printf("[Parser][decl]: sizeList list contains ... \n");
             for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
             {
-                printf("[Parser][decl]: %d\n",*list_iter);
+                //printf("[Parser][decl]: %d\n",*list_iter);
             }
 
             calcArrayOffSet(strdup($1));
@@ -84,7 +84,7 @@ type:   INT
 
 s_block: BEG {stackCopy->push();} dec_list stmts END
         {
-            printf("[Parser][s_block]: pop new STL\n");
+            //printf("[Parser][s_block]: pop new STL\n");
             stackCopy->pop();
         }
     ;
@@ -95,21 +95,21 @@ stmts:  statement
 
 statement:  id '=' expression
             {
-                printf("[Parser][statement]: id = expression;\n");                
+                //printf("[Parser][statement]: id = expression;\n");                
                 generate_expression($1, $3);
             }
             |   NAME '(' expr_list ')'
             |   id '=' conditional_expr            
             |   if_start
             {
-                printf("[Parser]: if body\n");
+                //printf("[Parser]: if body\n");
                 printf("IfElse%d:\n",g_ifCounterStack.top());
                 printf("IfEnd%d:\n", g_ifCounterStack.top());
                 g_ifCounterStack.pop();                                
             }
             |   if_start ELSE s_block
             {
-                printf("[Parser][statement]: else body\n");
+                //printf("[Parser][statement]: else body\n");
                 printf("IfElse%d:\n", g_ifCounterStack.top());
                 printf("ELSE STUFSSSSSSSSSSS\n");
                 printf("IfEnd%d:\n", g_ifCounterStack.top());                
@@ -117,7 +117,7 @@ statement:  id '=' expression
             }            
             |   DO {g_loopCounterStack.push(g_loopCounter);} INTLITERAL NAME '=' do_list {printf("StartDoLoop%d:\n",g_loopCounter);g_loopCounter++;} stmts end_do
             {
-                printf("[Parser][statement]: loop found. counter = %d\n", g_loopCounter);
+                //printf("[Parser][statement]: loop found. counter = %d\n", g_loopCounter);
             }
             |   RETURN primary
             |   QUIT
@@ -133,13 +133,13 @@ if_start:   IF {g_ifCounterStack.push(g_ifCounter); g_ifCounter++;printf("IfStar
                     printf("IfThen%d:\n", g_ifCounterStack.top());
                     printf("goto IfEnd%d;\n", g_ifCounterStack.top());
 
-                    printf("[Parser][if_start]: then body\n");
+                    //printf("[Parser][if_start]: then body\n");
                 }
     ;
 
 end_do:  INTLITERAL CONTINUE
         {
-            printf("[Parser][end_do]: INTLITERAL CONTINE\n");
+            //printf("[Parser][end_do]: INTLITERAL CONTINE\n");
             printf("if(r%d<r%d) goto StartDoLoop%d;\n", registerNumber++, registerNumber++, g_loopCounterStack.top());
             printf("EndDoLoop%d:\n", g_loopCounterStack.top());
             g_loopCounterStack.pop();
@@ -148,14 +148,14 @@ end_do:  INTLITERAL CONTINUE
 
 conditional_expr:    expression rel_op expression
                     {
-                        printf("[Parser][conditional_expr]: exp rel_op exp\n");
+                        //printf("[Parser][conditional_expr]: exp rel_op exp\n");
                         printf("%s %s %s", strdup($1), strdup($2), strdup($3));
                     }
                     |   NOT '(' conditional_expr ')'
                     |   conditional_expr AND '(' conditional_expr ')'
                     |   conditional_expr AND expression rel_op expression
                     {
-                    printf("[Parser][conditional_expr]: conditional_expr AND exp rel_op exp\n");
+                    //printf("[Parser][conditional_expr]: conditional_expr AND exp rel_op exp\n");
                     }
                     |   conditional_expr OR '(' conditional_expr ')'
                     |   conditional_expr OR expression rel_op expression
@@ -231,6 +231,9 @@ term:   term mul_op factor
     ;
 
 factor: factor EXPONENT u_operand
+        {
+            tempS = generate_exponentiation($1, $3);
+        }
         |   u_operand
         {
             $$ = strdup($1);
@@ -247,7 +250,7 @@ u_operand:   uop primary
 primary:    id
             {
                 $$ = strdup($1);
-                printf("[Parser][primary]: id is %s\n", strdup($1));
+                //printf("[Parser][primary]: id is %s\n", strdup($1));
             }
             |   NAME '(' expr_list ')'   
             |   '(' expression ')'
@@ -256,21 +259,21 @@ primary:    id
                 tempS = (char*)malloc(sizeof(char)*50);
                 sprintf(tempS,"%d",$1);
                 $$ = tempS;
-                printf("[Parser][primary]: INTLITERAL is %d\n",$1);                
+                //printf("[Parser][primary]: INTLITERAL is %d\n",$1);                
             }
             |   STRINGLITERAL	/* any quoted string, like "ET phone home" */
     ;
 
 element_list:   element
                 {
-                    printf("[Parser][element_list]:\n");
+                    //printf("[Parser][element_list]:\n");
                     $$ = strdup($1);
                     g_elementList.push_front($1);
                 }
                 |
                 element ',' element_list
                 {
-                    printf("[Parser][element_list]:\n");
+                    //printf("[Parser][element_list]:\n");
                     $$ = strdup($1);
                     g_elementList.push_front($1);
                 }
@@ -286,7 +289,7 @@ element:    NAME
                 tempS = (char*)malloc(sizeof(char)*50);
                 sprintf(tempS,"%d",$1);
                 $$ = tempS;
-                printf("[Parser][primary]: INTLITERAL is %d\n",$1);                 
+                //printf("[Parser][primary]: INTLITERAL is %d\n",$1);                 
             }
     ;
 
@@ -296,7 +299,7 @@ id: NAME
     }
     |   NAME '[' element_list ']' 
     {
-        //printf("[Parser][id]: expr_list = %s\n", strdup($3)); 
+        ////printf("[Parser][id]: expr_list = %s\n", strdup($3)); 
         for(list<char *>::iterator list_iter = g_elementList.begin(); list_iter != g_elementList.end(); list_iter++)
         {
             if(containsNumbers(*(list_iter)) == 1) {
@@ -383,7 +386,7 @@ void calcArrayOffSet(char *type)
 
     for(list<int>::iterator list_iter = tempArrayDimension.begin(); list_iter != tempArrayDimension.end(); list_iter++)
     {
-        printf("[Parser][calcArrayOffSet]: %d\n", *(list_iter));
+        //printf("[Parser][calcArrayOffSet]: %d\n", *(list_iter));
     }
     stackCopy->curr->symbolRecord.current->setArrayDimensionList(tempArrayDimension);
 }
@@ -403,7 +406,7 @@ int calcArrayElementOffset(string key)
         if(containsNumbers(*(list_iter)) == 1) {
             sum = sum + (atoi(*(list_iter)) * tempL.front());
             //printf("r%d = %d\n", i, sum);//offset for array index
-            //printf("[Parser][calcArrayElementOffset]: arrayDimension = %d\n", tempL.front());
+            ////printf("[Parser][calcArrayElementOffset]: arrayDimension = %d\n", tempL.front());
             tempL.pop_front();
         }
     }
@@ -475,7 +478,7 @@ int generate_temp_expression(char *a, char *b, char *c)
 
 void generate_expression(const char *str, char *rhs)
 {
-    printf("[Parser][generate_expression]: rhs values = %s\n", rhs);
+    //printf("[Parser][generate_expression]: rhs values = %s\n", rhs);
     if(searchRegisters(rhs) != -1){
         printf("r%d = r%d;\n", registerNumber, searchRegisters(rhs));
         tempR[registerNumber] = (char)str[0];
@@ -492,6 +495,85 @@ void generate_expression(const char *str, char *rhs)
         //printingThings();
         searchRegisters(str);
     }
+}
+
+/*
+ * handles register assignment and logic for exponentiation
+ */
+char * generate_exponentiation(char *base, char *exponent)
+{
+    int temp1,temp2,temp3;//for remembering registers
+    char tempStr[50];
+    char returnReg[50];
+    strcpy(returnReg,"r");
+
+    //exponent register
+    if(checkIfVarIsRegister(exponent) == 0) {
+        printf("r%d = %s;\n", registerNumber, exponent);
+        temp1 = registerNumber;
+        registerNumber++;
+    } else {
+        printf("r%d = r%d;\n", registerNumber, ++registerNumber);
+        temp1 = registerNumber;
+        registerNumber++;
+    }
+
+    //base register
+    if(checkIfVarIsRegister(base) == 0) {
+        printf("r%d = %s;\n", registerNumber, base);
+        temp2 = registerNumber;
+        registerNumber++;
+    } else {
+        if(searchRegisters(base) != -1){
+            printf("r%d = r%d;\n", registerNumber, searchRegisters(base));
+            temp2 = registerNumber;
+            registerNumber++;
+        }
+        else{
+            printf("r%d = r%d;\n", registerNumber, registerNumber++);
+            temp2 = registerNumber;
+            registerNumber++;
+        }
+    }
+
+    //constant multiplier
+    printf("r%d = 1;\n", registerNumber);
+    temp3 = registerNumber;
+    registerNumber++;
+
+    printf("\nL%d:\n", g_labelCounter);
+    printf("\tr%d = r%d * r%d;\n", temp3, temp2, temp3);
+    printf("\tr%d = r%d - 1;\n", temp1, temp1);
+    printf("\tif(r%d>r0) goto L%d;\n", temp1, g_labelCounter++);//r500 is reserved as 0
+
+    sprintf(tempStr,"%d",temp3);//convert from int to string
+
+    strncat(returnReg,tempStr,strlen(tempStr));
+
+    return returnReg;
+
+}
+
+int checkIfVarIsRegister(char *s)
+{
+    regex_t regex;
+    int reti;
+
+    reti = regcomp(&regex, "^[0-9]+",REG_EXTENDED);
+    if (reti) {
+        fprintf(stderr, "Could not compile regex\n");
+        exit(1);
+    }
+    reti = regexec(&regex, s, 0, NULL, 0);
+    if(!reti) {
+        //printf("[Parser]:var is int\n");
+        return 0;
+    } else if(reti == REG_NOMATCH) {
+        //printf("[Parser]:var is register\n");
+        return 1;
+    }
+
+    regfree(&regex);
 }
 
 void yyerror(const char *s)
