@@ -7,6 +7,9 @@
 
 %%
 program:    dec_list func_list
+            {
+                printf("}\n");
+            }
     ;
 
 func_list:   func
@@ -111,7 +114,7 @@ statement:  id '=' expression
             {
                 //printf("[Parser][statement]: else body\n");
                 printf("IfElse%d:\n", g_ifCounterStack.top());
-                //printf("ELSE STUFSSSSSSSSSSS\n");
+                printf("r%d = *(globalData + 0);\n", registerNumber++);                
                 printf("IfEnd%d:\n", g_ifCounterStack.top());                
                 g_ifCounterStack.pop();                
             }            
@@ -123,14 +126,19 @@ statement:  id '=' expression
             |   QUIT
     ;
 
-if_start:   IF {g_ifCounterStack.push(g_ifCounter); g_ifCounter++;printf("IfStart%d:\n", g_ifCounterStack.top());} '(' {printf("if(");} conditional_expr ')' 
+if_start:   IF {g_ifCounterStack.push(g_ifCounter); g_ifCounter++;printf("IfStart%d:\n", g_ifCounterStack.top());} '(' conditional_expr ')' 
                 {
-                    printf(") goto IfThen%d;\n", g_ifCounterStack.top());
-                    printf("goto IfElse%d;\n", g_ifCounterStack.top());
+                    if(strcmp(strdup($4),"=") == 0) {
+                        printf("if(r%d == r%d) goto IfThen%d;\n", registerNumber++, registerNumber++, g_ifCounterStack.top());
+                    } else {
+                        printf("if(r%d %s r%d) goto IfThen%d;\n", registerNumber++, strdup($4), registerNumber++, g_ifCounterStack.top());
+                        printf("goto IfElse%d;\n", g_ifCounterStack.top());
+                    }
                 }
             s_block
                 {
                     printf("IfThen%d:\n", g_ifCounterStack.top());
+                    printf("r%d = 2;\n", registerNumber++);
                     printf("goto IfEnd%d;\n", g_ifCounterStack.top());
 
                     //printf("[Parser][if_start]: then body\n");
@@ -152,7 +160,8 @@ end_do:  INTLITERAL CONTINUE
 conditional_expr:    expression rel_op expression
                     {
                         //printf("[Parser][conditional_expr]: exp rel_op exp\n");
-                        printf("%s %s %s", strdup($1), strdup($2), strdup($3));
+                        //printf("%s %s %s", strdup($1), strdup($2), strdup($3));
+                        $$ = strdup($2);
                     }
                     |   NOT '(' conditional_expr ')'
                     |   conditional_expr AND '(' conditional_expr ')'

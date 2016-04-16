@@ -42,6 +42,4 @@ int main()
     int yyparse();
     
     return(yyparse());
-
-    //printf("}\n");
 }
