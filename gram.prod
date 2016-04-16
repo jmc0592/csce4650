@@ -140,6 +140,9 @@ if_start:   IF {g_ifCounterStack.push(g_ifCounter); g_ifCounter++;printf("IfStar
 end_do:  INTLITERAL CONTINUE
         {
             //printf("[Parser][end_do]: INTLITERAL CONTINE\n");
+            /*tempS = (char*)malloc(sizeof(char)*50);
+            sprintf(tempS,"%d",$1);
+            printf("%s\n", tempS);*/
             printf("if(r%d<r%d) goto StartDoLoop%d;\n", registerNumber++, registerNumber++, g_loopCounterStack.top());
             printf("EndDoLoop%d:\n", g_loopCounterStack.top());
             g_loopCounterStack.pop();
