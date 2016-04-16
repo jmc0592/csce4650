@@ -20,7 +20,7 @@ int main()
 
     //register declarations
     int i;
-    for(i = 0; i <= 20; i++) {
+    for(i = 0; i <= 100; i++) {
         if(i == 0)
             printf("int r0,");
         else if( i != 100) 
@@ -32,7 +32,7 @@ int main()
 
 	//pointer declarations
 	printf("int *iptr1;\nchar *cptr1;\nchar *fp, *sp;\n");
-    printf("\nchar globalData[2048];\n");
+    printf("\nchar globalData[8192];\n");
         
 	printf("\nmain()\n");
         printf("{\n");
