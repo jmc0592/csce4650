@@ -31,7 +31,7 @@ void SymbolTableList::insert(string k)
     }
 }
 
-int SymbolTableList::recordSearch(string key)
+Record * SymbolTableList::recordSearch(string key)
 {
     Stack *stackCpy = this->addressToStackTop;
     SymbolTableList *templist = stackCpy->curr;
@@ -42,13 +42,13 @@ int SymbolTableList::recordSearch(string key)
             while(temp->after != NULL){
                 if(temp->key == key){
                     //cout << key << " is found in symbol table stored at " << templist << endl;
-                    return 1;
+                    return temp;
                 }
                 temp = temp->after;
             }
             if(temp->key == key){ //this outer if prevents above loop from going too far and segfaulting
                 //cout << key << " is found in symbol table stored at " << templist << endl;
-                return 1;
+                return temp;
             }
             else{
                 //cout<<"This table does not contain "<<key<<endl;
@@ -56,16 +56,16 @@ int SymbolTableList::recordSearch(string key)
         }
         else{
             //cout<<"There are no records in current stack"<<endl;
-            return 0;
+            return NULL;
         }
         if(templist->prev != NULL){ //moving to new stack
             templist = templist->prev;
         }
         else{
-            return 0;
+            return NULL;
         }
     }
-    return 0;
+    return NULL;
 }
 
 int SymbolTableList::offsetSearch(string key)

@@ -41,12 +41,14 @@ decl:   type NAME
         {
             stackCopy->curr->symbolRecord.current->setType(strdup($1));
             stackCopy->curr->symbolRecord.current->setOffset(g_offSet);
+            printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
+
             printf("[Parser][decl]: sizeList list contains ... \n");
             for(list<int>::iterator list_iter = g_sizeList.begin(); list_iter != g_sizeList.end(); list_iter++)
             {
                 printf("[Parser][decl]: %d\n",*list_iter);
             }
-            printf("[Parser][decl]: array '%s' inserted. type = %s and offset = %d to stack\n", strdup($2->current->key.c_str()),strdup($1), g_offSet);
+
             calcArrayOffSet(strdup($1));
             g_sizeList.clear();
         }
@@ -138,7 +140,7 @@ if_start:   IF {g_ifCounterStack.push(g_ifCounter); g_ifCounter++;printf("IfStar
 end_do:  INTLITERAL CONTINUE
         {
             printf("[Parser][end_do]: INTLITERAL CONTINE\n");
-            printf("if(REG<REG) goto StartDoLoop%d;\n", g_loopCounterStack.top());
+            printf("if(r%d<r%d) goto StartDoLoop%d;\n", registerNumber++, registerNumber++, g_loopCounterStack.top());
             printf("EndDoLoop%d:\n", g_loopCounterStack.top());
             g_loopCounterStack.pop();
         }
@@ -164,7 +166,13 @@ do_list: expression ',' expression
     ;
 
 expr_list:   expression
+            {
+                $$ = strdup($1);
+            }
             |   expression ',' expr_list
+            {
+                $$ = strdup($1);
+            }
             |   /* goes to "nothing", i.expression. empty string */ 
     ;
 
@@ -253,13 +261,54 @@ primary:    id
             |   STRINGLITERAL	/* any quoted string, like "ET phone home" */
     ;
 
+element_list:   element
+                {
+                    printf("[Parser][element_list]:\n");
+                    $$ = strdup($1);
+                    g_elementList.push_front($1);
+                }
+                |
+                element ',' element_list
+                {
+                    printf("[Parser][element_list]:\n");
+                    $$ = strdup($1);
+                    g_elementList.push_front($1);
+                }
+    ;
+
+element:    NAME
+            {
+                $$ = strdup($1->current->key.c_str());
+            }
+            |
+            INTLITERAL
+            {
+                tempS = (char*)malloc(sizeof(char)*50);
+                sprintf(tempS,"%d",$1);
+                $$ = tempS;
+                printf("[Parser][primary]: INTLITERAL is %d\n",$1);                 
+            }
+    ;
+
 id: NAME
     {
         $$ = strdup($1->current->key.c_str());
     }
-    |   NAME '[' expr_list ']' 
+    |   NAME '[' element_list ']' 
     {
-        $$ = strdup($1->current->key.c_str());
+        //printf("[Parser][id]: expr_list = %s\n", strdup($3)); 
+        for(list<char *>::iterator list_iter = g_elementList.begin(); list_iter != g_elementList.end(); list_iter++)
+        {
+            if(containsNumbers(*(list_iter)) == 1) {
+                //printf("r1 = %s\n", *(list_iter));
+                ;
+            }
+        }
+        int sum = calcArrayElementOffset($1->current->key);
+        printf("r%d = *(globalData + %d);\n", registerNumber, sum);
+        registerNumber++;
+        //$$ = strdup($1->current->key.c_str());
+        g_elementList.clear();
     }
     ;
 
@@ -296,11 +345,22 @@ uop:    '-' {$$ = "-";}
         |   '~' {$$ = "~";}
     ;
 %%
+int containsNumbers(char *s)
+{
+    while (*s) {
+        if (isdigit(*s++) == 0) return 0;
+    }
+
+    return 1;
+}
+
 
 void calcArrayOffSet(char *type)
 {
-    list<int> rowMajor;
+    list<int> rowMajor, tempArrayDimension;
     int temp;
+
+    tempArrayDimension.push_front(4);
 
     //4 bytes for int, 1 byte for char
     if(strcmp(type, "int") == 0) {
@@ -317,12 +377,41 @@ void calcArrayOffSet(char *type)
         rowMajor.push_front(temp);
     }
 
-//    rowMajor.pop_front();//ugly fix for removing unneeded elemnent
-
     g_offSet = rowMajor.front();
+    rowMajor.pop_front();//don't need front for dimension list
+    tempArrayDimension = rowMajor;
+
+    for(list<int>::iterator list_iter = tempArrayDimension.begin(); list_iter != tempArrayDimension.end(); list_iter++)
+    {
+        printf("[Parser][calcArrayOffSet]: %d\n", *(list_iter));
+    }
+    stackCopy->curr->symbolRecord.current->setArrayDimensionList(tempArrayDimension);
 }
 
-//might need to change. going to talk to sweany about this.
+int calcArrayElementOffset(string key)
+{
+    list<int> tempL = list<int>();
+    Record *tempRecord;
+    int sum = 0;
+    int i = 0;
+
+    tempRecord = stackCopy->curr->recordSearch(key.c_str());
+    tempL = tempRecord->getArrayDimensionList();
+    
+    for(list<char *>::iterator list_iter = g_elementList.begin(); list_iter != g_elementList.end(); list_iter++)
+    {
+        if(containsNumbers(*(list_iter)) == 1) {
+            sum = sum + (atoi(*(list_iter)) * tempL.front());
+            //printf("r%d = %d\n", i, sum);//offset for array index
+            //printf("[Parser][calcArrayElementOffset]: arrayDimension = %d\n", tempL.front());
+            tempL.pop_front();
+        }
+    }
+
+    return sum;
+
+}
+
 int getSumOfRowMajor(list<int> l)
 {
     int sum = 0;

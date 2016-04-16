@@ -14,3 +14,13 @@ void Record::setType(string t)
 {
     type = t;
 }
+
+void Record::setArrayDimensionList(list<int> l)
+{
+    arrayDimension = l;
+}
+
+list<int> Record::getArrayDimensionList()
+{
+    return arrayDimension;
+}
