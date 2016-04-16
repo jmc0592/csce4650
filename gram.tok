@@ -32,7 +32,7 @@ int registerNumber = 4;//reserve r0 for 0. r1, r2, r3 for operations
 char tempR[100];
 char *tempS;
 int generate_temp_expression(char *a, char *b, char *c);
-void calcArrayElementOffset(string);
+int calcArrayElementOffset(string);
 int containsNumbers(char *);
 
 

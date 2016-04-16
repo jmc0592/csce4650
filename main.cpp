@@ -23,7 +23,7 @@ int main()
     for(i = 0; i <= 20; i++) {
         if(i == 0)
             printf("int r0,");
-        else if( i != 20) 
+        else if( i != 100) 
             printf("r%d,",i);
         else
             printf("r%d;\n",i);
