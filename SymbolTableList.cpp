@@ -93,13 +93,13 @@ int SymbolTableList::offsetSearch(string key)
         }
         else{
             //cout<<"There are no records in current stack"<<endl;
-            return -1;
+            return 0;
         }
         if(templist->prev != NULL){ //moving to new stack
             templist = templist->prev;
         }
         else{
-            return -1;
+            return 0;
         }
     }
     return 0;
