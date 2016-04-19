@@ -72,7 +72,8 @@ extern "C" int yylex();
 										yylval.stringstuff = yytext;
 										return (CHAR);
 									}
-"bool"								{	//printf("[Lexor]: Found 'bool'\n");
+"boolean"								{	//printf("[Lexor]: Found 'bool'\n");
+											yylval.stringstuff = yytext;
 										return (BOOL);
 									}
 "void"								{	//printf("[Lexor]: Found 'void'\n");

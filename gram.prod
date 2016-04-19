@@ -392,8 +392,10 @@ void calcArrayOffSet(char *type)
         rowMajor.push_front(temp);
     }
 
-    g_offSet = rowMajor.front();
-    rowMajor.pop_front();//don't need front for dimension list
+    if(!rowMajor.empty()){
+        g_offSet = rowMajor.front();
+        rowMajor.pop_front();//don't need front for dimension list
+    }
     tempArrayDimension = rowMajor;
 
     for(list<int>::iterator list_iter = tempArrayDimension.begin(); list_iter != tempArrayDimension.end(); list_iter++)
@@ -419,7 +421,9 @@ int calcArrayElementOffset(string key)
             sum = sum + (atoi(*(list_iter)) * tempL.front());
             //printf("r%d = %d\n", i, sum);//offset for array index
             ////printf("[Parser][calcArrayElementOffset]: arrayDimension = %d\n", tempL.front());
-            tempL.pop_front();
+            if(!tempL.empty()){
+                tempL.pop_front();
+            }
         }
     }
 

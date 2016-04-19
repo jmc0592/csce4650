@@ -33,6 +33,7 @@ void SymbolTableList::insert(string k)
 
 Record * SymbolTableList::recordSearch(string key)
 {
+    //cout << "key ---- " << endl;
     Stack *stackCpy = this->addressToStackTop;
     SymbolTableList *templist = stackCpy->curr;
     
@@ -40,6 +41,7 @@ Record * SymbolTableList::recordSearch(string key)
         if(templist->symbolRecord.head != NULL){ //looping starting at the head
             Record *temp = templist->symbolRecord.head;
             while(temp->after != NULL){
+                //cout << "key2 ---- " << key << endl;
                 if(temp->key == key){
                     //cout << key << " is found in symbol table stored at " << templist << endl;
                     return temp;
@@ -52,6 +54,7 @@ Record * SymbolTableList::recordSearch(string key)
             }
             else{
                 //cout<<"This table does not contain "<<key<<endl;
+                return NULL;
             }
         }
         else{
