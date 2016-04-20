@@ -180,10 +180,12 @@ do_list: expression ',' expression
 expr_list:   expression
             {
                 $$ = strdup($1);
+                g_elementList.push_front($1);
             }
             |   expression ',' expr_list
             {
                 $$ = strdup($1);
+                g_elementList.push_front($1);
             }
             |   /* goes to "nothing", i.expression. empty string */ 
     ;
@@ -309,7 +311,7 @@ id: NAME
     {
         $$ = strdup($1->current->key.c_str());
     }
-    |   NAME '[' element_list ']' 
+    |   NAME '[' expr_list ']' 
     {
         ////printf("[Parser][id]: expr_list = %s\n", strdup($3)); 
         for(list<char *>::iterator list_iter = g_elementList.begin(); list_iter != g_elementList.end(); list_iter++)
@@ -407,22 +409,20 @@ void calcArrayOffSet(char *type)
 
 int calcArrayElementOffset(string key)
 {
-    list<int> tempL = list<int>();
     Record *tempRecord;
     int sum = 0;
     int i = 0;
 
     tempRecord = stackCopy->curr->recordSearch(key.c_str());
-    tempL = tempRecord->getArrayDimensionList();
     
     for(list<char *>::iterator list_iter = g_elementList.begin(); list_iter != g_elementList.end(); list_iter++)
     {
         if(containsNumbers(*(list_iter)) == 1) {
-            sum = sum + (atoi(*(list_iter)) * tempL.front());
+            sum = sum + (atoi(*(list_iter)) * tempRecord->arrayDimension.front());
             //printf("r%d = %d\n", i, sum);//offset for array index
-            ////printf("[Parser][calcArrayElementOffset]: arrayDimension = %d\n", tempL.front());
-            if(!tempL.empty()){
-                tempL.pop_front();
+            ////printf("[Parser][calcArrayElementOffset]: arrayDimension = %d\n", tempRecord->arrayDimension.front());
+            if(!tempRecord->arrayDimension.empty()){
+                tempRecord->arrayDimension.pop_front();
             }
         }
     }

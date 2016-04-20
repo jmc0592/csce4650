@@ -92,6 +92,7 @@ int SymbolTableList::offsetSearch(string key)
             }
             else{
                 //cout<<"This table does not contain "<<key<<endl;
+                return 0;
             }
         }
         else{
