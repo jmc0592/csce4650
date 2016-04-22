@@ -77,6 +77,7 @@ char* expressionReg;
 %token BEG
 %token EXPONENT
 %token OUTPUT
+%token PRINTLINE
 %token <stringstuff> INT
 %token <stringstuff> BOOL
 %token <stringstuff> CHAR
@@ -114,5 +115,3 @@ char* expressionReg;
 %type <stringstuff> add_op
 %type <stringstuff> statement /* statement_list */
 %type <stringstuff> if_start
-%type <stringstuff> element_list
-%type <stringstuff> element

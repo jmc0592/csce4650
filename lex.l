@@ -90,6 +90,7 @@ extern "C" int yylex();
 
 {Letter}({Letter}|{Digit}|_)*		{ 
 										//printf("[Lexor]: Found 'NAME' = %s\n",strdup(yytext));
+										yylval.stringstuff = yytext;
 										process_id();
 					  					return (NAME);		
 					  				}
