@@ -19,9 +19,6 @@ extern "C" int yylex();
 
 %%
 [ \t\n]+							{ /* delete */		}
-"output"							{	//printf("[Lexor]: Found 'output'\n");
-										return(OUTPUT);
-									}
 "begin"								{	//printf("[Lexor]: Found 'begin'\n");
 										return BEG;	
 									}
@@ -101,6 +98,7 @@ extern "C" int yylex();
 				          			}
 \"([^\\\"]|\\.)*\"					{
 										//printf("[Lexor]: Found 'STRINGLITERAL'\n");
+										yylval.stringstuff = yytext;
 										return STRINGLITERAL;
 									}				          			
 ","									{	//printf("[Lexor]: Found ','\n");

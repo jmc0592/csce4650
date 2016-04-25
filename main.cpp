@@ -34,9 +34,7 @@ int main()
 	printf("int *iptr1;\nchar *cptr1;\nchar *fp, *sp;\n");
     printf("\nchar globalData[8192];\n");
         
-	printf("\nmain()\n");
-        printf("{\n");
-	printf("r0 = 0;\n");//reserve r0 for 0
+	printf("r100 = 0;\n");//reserve r100 for 0
 
     // Initialize key function 
     int yyparse();
