@@ -13,7 +13,7 @@ func_list:   func
             |   func func_list
     ;
 
-func:   NAME '(' parm_list ')' ':' type {printf("%s()\n{\n", strdup($1->current->key.c_str()));}{stackCopy->push();} dec_list s_block
+func:   NAME '(' parm_list ')' ':' type {printf("%s %s()\n{\n", $6, strdup($1->current->key.c_str()));}{stackCopy->push();} dec_list s_block
         {
             //printf("[Parser][func]: NAME = %s\n", $1);
             //printf("[Parser][func]: pop new STL\n");
@@ -134,6 +134,10 @@ statement:  id '=' expression
                 //printf("[Parser][statement]: loop found. counter = %d\n", g_loopCounter);
             }
             |   RETURN primary
+            {
+                //printf("[Parser][statement]: RETURN primary. use r0 for return register.\n");
+                printf("r0 = \n");
+            }
             |   QUIT
     ;
 
