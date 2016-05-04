@@ -33,8 +33,6 @@ int main()
 	//pointer declarations
 	printf("int *iptr1;\nchar *cptr1;\nchar *fp, *sp;\n");
     printf("\nchar globalData[8192];\n");
-        
-	printf("r100 = 0;\n");//reserve r100 for 0
 
     // Initialize key function 
     int yyparse();

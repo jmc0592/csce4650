@@ -13,7 +13,7 @@ func_list:   func
             |   func func_list
     ;
 
-func:   NAME '(' parm_list ')' ':' type {printf("%s %s()\n{\n", $6, strdup($1->current->key.c_str()));}{stackCopy->push();} dec_list s_block
+func:   NAME '(' parm_list ')' ':' type {printf("%s()\n{\nr100 = 0;\n",strdup($1->current->key.c_str()));}{stackCopy->push();} dec_list s_block
         {
             //printf("[Parser][func]: NAME = %s\n", $1);
             //printf("[Parser][func]: pop new STL\n");
@@ -125,7 +125,7 @@ statement:  id '=' expression
             {
                 //printf("[Parser][statement]: else body\n");
                 printf("IfElse%d:\n", g_ifCounterStack.top());
-                printf("r%d = *(fp + 0);\n", registerNumber++);                
+                printf("r%d = *(globalData + 0);\n", registerNumber++);                
                 printf("IfEnd%d:\n", g_ifCounterStack.top());                
                 g_ifCounterStack.pop();                
             }            
@@ -134,10 +134,6 @@ statement:  id '=' expression
                 //printf("[Parser][statement]: loop found. counter = %d\n", g_loopCounter);
             }
             |   RETURN primary
-            {
-                //printf("[Parser][statement]: RETURN primary. use r0 for return register.\n");
-                printf("r0 = \n");
-            }
             |   QUIT
     ;
 
@@ -314,7 +310,7 @@ id: NAME
             }
         }
         int sum = calcArrayElementOffset($1->current->key);
-        printf("r%d = *(fp + %d);\n", registerNumber, sum);
+        printf("r%d = *(globalData + %d);\n", registerNumber, sum);
         registerNumber++;
         //$$ = strdup($1->current->key.c_str());
         g_elementList.clear();
@@ -465,7 +461,7 @@ int generate_temp_expression(char *a, char *b, char *c)
         sprintf(a, "r%d", searchRegisters(a));
     }
     else if(stackCopy->curr->recordSearch(a) != NULL){
-        printf("r%d = *(fp + %d);\n", registerNumber, stackCopy->curr->offsetSearch(a));
+        printf("r%d = *(globalData + %d);\n", registerNumber, stackCopy->curr->offsetSearch(a));
         sprintf(a, "r%d", registerNumber);
         registerNumber++;
     }
@@ -474,7 +470,7 @@ int generate_temp_expression(char *a, char *b, char *c)
         sprintf(c, "r%d", searchRegisters(c));
     }
     else if(stackCopy->curr->recordSearch(c) != NULL){
-        printf("r%d = *(fp + %d);\n", registerNumber, stackCopy->curr->offsetSearch(c));
+        printf("r%d = *(globalData + %d);\n", registerNumber, stackCopy->curr->offsetSearch(c));
         sprintf(c, "r%d", registerNumber);
         registerNumber++;
     }
@@ -497,7 +493,7 @@ void generate_expression(const char *str, char *rhs)
     else{
         printf("r%d = %s;\n", registerNumber, rhs);
         stackCopy->curr->offsetSearch(str);
-        printf("*(fp + %d) = r%d;\n", stackCopy->curr->offsetSearch(str), registerNumber);
+        printf("*(globalData + %d) = r%d;\n", stackCopy->curr->offsetSearch(str), registerNumber);
         tempR[registerNumber] = (char)str[0];
         registerNumber++;
         //printingThings();
@@ -552,7 +548,7 @@ char * generate_exponentiation(char *base, char *exponent)
     printf("\nL%d:\n", g_labelCounter);
     printf("\tr%d = r%d * r%d;\n", temp3, temp2, temp3);
     printf("\tr%d = r%d - 1;\n", temp1, temp1);
-    printf("\tif(r%d>r100) goto L%d;\n", temp1, g_labelCounter++);//r500 is reserved as 0
+    printf("\tif(r%d>r100) goto L%d;\n", temp1, g_labelCounter++);//r100 is reserved as 0
 
     sprintf(tempStr,"%d",temp3);//convert from int to string
 
