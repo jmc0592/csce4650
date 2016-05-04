@@ -6,3 +6,8 @@ This should create the 'compiler' executable file. You can then test it with var
 
 The compiler will send the CMachine code to stdout. 
 
+To compile the generated CMachine code through gcc, type in 'gcc fileName Assembly/accessories.c'. Then type './a.out' to run the file.
+
+NOTE: Before the last '}' of main, the statement 'printf("");' was added in case a label
+is the last thing. This is purely to get the generated C code to run with gcc. It is not
+for any other purpose than that.

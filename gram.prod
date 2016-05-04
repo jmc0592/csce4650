@@ -18,6 +18,7 @@ func:   NAME '(' parm_list ')' ':' type {printf("%s()\n{\nr100 = 0;\n",strdup($1
             //printf("[Parser][func]: NAME = %s\n", $1);
             //printf("[Parser][func]: pop new STL\n");
             stackCopy->pop();
+            cout << "printf(\"\");" << endl;
             printf("}\n");
         }
     ;
