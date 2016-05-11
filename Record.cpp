@@ -3,6 +3,7 @@
 Record::Record(string k){
 	key = k;
 	after = NULL;
+	before = NULL;
 }
 
 void Record::setOffset(int os)

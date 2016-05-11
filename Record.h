@@ -12,7 +12,8 @@ public:
     void setOffset(int);
     void setArrayDimensionList(list<int>);
     list<int> getArrayDimensionList();
-    
+
+    Record *before;
 	Record *after;
 	string key;
     string type;

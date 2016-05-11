@@ -37,6 +37,7 @@ int calcArrayElementOffset(string);
 int containsNumbers(char *);
 char * generate_exponentiation(char *base, char *exponent);
 int checkIfVarIsRegister(char *);
+int pullReg(const char *);
 
 /***** Probably change structure to be better for this new grammar
 void generate_copy(const char *, int);

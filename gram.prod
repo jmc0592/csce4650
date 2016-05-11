@@ -143,7 +143,9 @@ if_start:   IF {g_ifCounterStack.push(g_ifCounter); g_ifCounter++;printf("IfStar
                     if(strcmp(strdup($4),"=") == 0) {
                         printf("if(r%d == r%d) goto IfThen%d;\n", registerNumber++, registerNumber++, g_ifCounterStack.top());
                     } else {
-                        printf("if(r%d %s r%d) goto IfThen%d;\n", registerNumber++, strdup($4), registerNumber++, g_ifCounterStack.top());
+                        //printf("%s\n", stackCopy->curr->symbolRecord.current->before->before->before->key.c_str());
+                        //printf("%d\n", pullReg(stackCopy->curr->symbolRecord.current->before->before->before->key.c_str()));
+                        printf("if(r%d %s r%d) goto IfThen%d;\n", registerNumber-1, strdup($4), pullReg(stackCopy->curr->symbolRecord.current->before->before->before->key.c_str()), g_ifCounterStack.top());
                         printf("goto IfElse%d;\n", g_ifCounterStack.top());
                     }
                 }
@@ -440,9 +442,28 @@ void updateOffSet(char *type)
         g_offSet = g_offSet + 1;//1 bytes for a char
     }
 }
+
+int pullReg(const char *target){
+    //printf("%s\n", target);
+    for(int x = 0; x<=registerNumber; x++){
+        char temp = tempR[x];
+        //printf("%s\n", "in here");
+        char temp2 = (char)target[0];
+        if(temp == temp2){
+            //printf("IT IS HERE: %c\n", (char)target[0]);
+            return x;
+        }
+        else{
+            //printf("ITS NOT FOUND YO\n");
+        }
+    }
+    return 0;
+}
+
 int searchRegisters(const char *target){
     for(int x = 0; x<=registerNumber; x++){
         char temp = tempR[x];
+        //printf("%s\n", "in here");
         char temp2 = (char)target[0];
         if(temp == temp2){
             //printf("IT IS HERE: %c\n", (char)target[0]);

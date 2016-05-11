@@ -21,13 +21,16 @@ void SymbolTableList::leave_current_scope()
 void SymbolTableList::insert(string k)
 {
     Record *temp = new Record(k);
+    Record *temp2 = new Record(k);
     if(symbolRecord.head == NULL){ //first insert
         symbolRecord.head = temp; //linking head
         symbolRecord.current = temp; //continuing current
     }
     else{
         symbolRecord.current->after = temp; //single linking
+        temp2 = symbolRecord.current;
         symbolRecord.current = symbolRecord.current->after; //moving forward
+        symbolRecord.current->before = temp2;
     }
 }
 
